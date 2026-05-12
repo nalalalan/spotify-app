@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" role="img" aria-label="Driving playlist versions">
+  <rect width="180" height="180" rx="34" fill="#171712"/>
+  <path d="M45 50h84M45 78h62M45 106h84M45 134h54" fill="none" stroke="#f8f2e6" stroke-width="12" stroke-linecap="round"/>
+  <circle cx="135" cy="78" r="15" fill="#1db954"/>
+  <path d="M135 78V42h24" fill="none" stroke="#1db954" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

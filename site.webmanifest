@@ -1,0 +1,14 @@
+{
+  "name": "Driving Playlist Versions",
+  "short_name": "Driving",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "64x64",
+      "type": "image/svg+xml"
+    }
+  ],
+  "theme_color": "#171712",
+  "background_color": "#f6f3ec",
+  "display": "standalone"
+}
