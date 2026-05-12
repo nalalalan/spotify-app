@@ -1,6 +1,40 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" role="img" aria-label="Driving playlist versions">
-  <rect width="180" height="180" rx="34" fill="#171712"/>
-  <path d="M45 50h84M45 78h62M45 106h84M45 134h54" fill="none" stroke="#f8f2e6" stroke-width="12" stroke-linecap="round"/>
-  <circle cx="135" cy="78" r="15" fill="#1db954"/>
-  <path d="M135 78V42h24" fill="none" stroke="#1db954" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180" viewBox="6 6 116 116" role="img" aria-label="Driving playlist versions">
+  <defs>
+    <filter id="d" x="-35%" y="-35%" width="170%" height="170%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="10" stdDeviation="6" flood-color="#2b211d" flood-opacity=".16"/>
+      <feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#fffaf4" flood-opacity=".52"/>
+    </filter>
+    <linearGradient id="paper" x1="20" y1="18" x2="108" y2="114">
+      <stop stop-color="#fff8ef"/>
+      <stop offset="1" stop-color="#e7d8c4"/>
+    </linearGradient>
+    <linearGradient id="green" x1="18" y1="20" x2="108" y2="112">
+      <stop stop-color="#86ad8a"/>
+      <stop offset=".55" stop-color="#5f8b69"/>
+      <stop offset="1" stop-color="#3f6a4d"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="20" y1="16" x2="108" y2="112">
+      <stop stop-color="#efc86d"/>
+      <stop offset=".58" stop-color="#bd8740"/>
+      <stop offset="1" stop-color="#7c5529"/>
+    </linearGradient>
+    <linearGradient id="rose" x1="20" y1="18" x2="108" y2="114">
+      <stop stop-color="#e1a2a6"/>
+      <stop offset=".56" stop-color="#bd747b"/>
+      <stop offset="1" stop-color="#854f58"/>
+    </linearGradient>
+    <linearGradient id="ink" x1="18" y1="14" x2="108" y2="116">
+      <stop stop-color="#756657"/>
+      <stop offset="1" stop-color="#473d34"/>
+    </linearGradient>
+  </defs>
+  <g filter="url(#d)">
+    <path d="M31 29h56c8 0 14 6 14 14v46c0 8-6 14-14 14H31c-8 0-14-6-14-14V43c0-8 6-14 14-14z" fill="url(#paper)"/>
+    <path d="M37 20h55c7 0 12 5 12 12v46" fill="none" stroke="url(#gold)" stroke-width="8" stroke-linecap="round" opacity=".72"/>
+    <path d="M26 40h50M26 55h38M26 70h48M26 85h31" fill="none" stroke="url(#ink)" stroke-width="5.5" stroke-linecap="round" opacity=".72"/>
+    <path d="M82 61c9-5 18-5 27 0v21a9 9 0 1 1-6-8V51c-6-4-13-4-21 0z" fill="url(#green)"/>
+    <circle cx="101" cy="82" r="8" fill="url(#green)"/>
+    <path d="M30 101c22 10 48 10 70-1" fill="none" stroke="url(#rose)" stroke-width="6" stroke-linecap="round" opacity=".82"/>
+    <circle cx="86" cy="38" r="6" fill="url(#gold)"/>
+  </g>
 </svg>
