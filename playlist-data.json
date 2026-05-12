@@ -1,9 +1,10 @@
 {
-  "generatedAt": "2026-05-12T04:41:00.645Z",
+  "generatedAt": "2026-05-12T20:33:51.775Z",
   "provenance": {
     "profileUrl": "https://open.spotify.com/user/1245603146?si=ac25e33ff71d4393",
     "playlistIdsRecoveredFrom": "Spotify public profile rendered in the in-app browser on 2026-05-12",
-    "trackRowsRecoveredFrom": "Spotify public embed __NEXT_DATA__ payloads"
+    "trackRowsRecoveredFrom": "Spotify public embed __NEXT_DATA__ payloads",
+    "dateRowsRecoveredFrom": "Local Spotify account cache after opening playlists in the installed Spotify app; Spotify public embeds do not include added_at rows."
   },
   "versions": [
     {
@@ -1221,8 +1222,9 @@
       ],
       "profile": {
         "dateMade": null,
-        "dateStatus": "not_exposed",
-        "dateLabel": "Unavailable",
+        "dateStatus": "needs_account_added_at",
+        "dateBasis": "Needs Spotify added_at rows from the logged-in account or an official Spotify playlist export.",
+        "dateLabel": "Date pending",
         "topGenre": "K-pop",
         "topArtist": "TWICE",
         "averageDuration": "5:32",
@@ -2151,8 +2153,9 @@
       ],
       "profile": {
         "dateMade": null,
-        "dateStatus": "not_exposed",
-        "dateLabel": "Unavailable",
+        "dateStatus": "needs_account_added_at",
+        "dateBasis": "Needs Spotify added_at rows from the logged-in account or an official Spotify playlist export.",
+        "dateLabel": "Date pending",
         "topGenre": "K-pop",
         "topArtist": "Red Velvet",
         "averageDuration": "3:18",
@@ -2746,8 +2749,9 @@
       ],
       "profile": {
         "dateMade": null,
-        "dateStatus": "not_exposed",
-        "dateLabel": "Unavailable",
+        "dateStatus": "needs_account_added_at",
+        "dateBasis": "Needs Spotify added_at rows from the logged-in account or an official Spotify playlist export.",
+        "dateLabel": "Date pending",
         "topGenre": "K-pop",
         "topArtist": "LE SSERAFIM",
         "averageDuration": "3:07",
@@ -3252,8 +3256,9 @@
       ],
       "profile": {
         "dateMade": null,
-        "dateStatus": "not_exposed",
-        "dateLabel": "Unavailable",
+        "dateStatus": "needs_account_added_at",
+        "dateBasis": "Needs Spotify added_at rows from the logged-in account or an official Spotify playlist export.",
+        "dateLabel": "Date pending",
         "topGenre": "K-pop",
         "topArtist": "LE SSERAFIM",
         "averageDuration": "3:07",
@@ -4046,8 +4051,9 @@
       ],
       "profile": {
         "dateMade": null,
-        "dateStatus": "not_exposed",
-        "dateLabel": "Unavailable",
+        "dateStatus": "needs_account_added_at",
+        "dateBasis": "Needs Spotify added_at rows from the logged-in account or an official Spotify playlist export.",
+        "dateLabel": "Date pending",
         "topGenre": "K-pop",
         "topArtist": "LE SSERAFIM",
         "averageDuration": "3:02",
@@ -5320,8 +5326,9 @@
       ],
       "profile": {
         "dateMade": null,
-        "dateStatus": "not_exposed",
-        "dateLabel": "Unavailable",
+        "dateStatus": "needs_account_added_at",
+        "dateBasis": "Needs Spotify added_at rows from the logged-in account or an official Spotify playlist export.",
+        "dateLabel": "Date pending",
         "topGenre": "K-pop",
         "topArtist": "NewJeans",
         "averageDuration": "3:05",
@@ -6588,14 +6595,15 @@
           "spotifyUrl": "https://open.spotify.com/track/6KiEF5zqzHiFjzdm8gChz7",
           "durationMs": 173080,
           "duration": "2:53",
-          "previewUrl": "https://p.scdn.co/mp3-preview/6515e8788480368b2555b7439d2ceef601e571af",
+          "previewUrl": "https://p.scdn.co/mp3-preview/07495722e0fff3ca490e9198e541950f6d141f30",
           "explicit": false
         }
       ],
       "profile": {
         "dateMade": null,
-        "dateStatus": "not_exposed",
-        "dateLabel": "Unavailable",
+        "dateStatus": "needs_account_added_at",
+        "dateBasis": "Needs Spotify added_at rows from the logged-in account or an official Spotify playlist export.",
+        "dateLabel": "Date pending",
         "topGenre": "K-pop",
         "topArtist": "Red Velvet",
         "averageDuration": "3:16",
@@ -7867,8 +7875,9 @@
       ],
       "profile": {
         "dateMade": null,
-        "dateStatus": "not_exposed",
-        "dateLabel": "Unavailable",
+        "dateStatus": "needs_account_added_at",
+        "dateBasis": "Needs Spotify added_at rows from the logged-in account or an official Spotify playlist export.",
+        "dateLabel": "Date pending",
         "topGenre": "K-pop",
         "topArtist": "aespa",
         "averageDuration": "3:12",
@@ -9139,9 +9148,10 @@
         }
       ],
       "profile": {
-        "dateMade": null,
-        "dateStatus": "not_exposed",
-        "dateLabel": "Unavailable",
+        "dateMade": "2025-04-18T18:01:19.000Z",
+        "dateStatus": "cache_estimate",
+        "dateBasis": "Local Spotify account cache near playlist row; treated as estimated until confirmed by Spotify added_at export.",
+        "dateLabel": "Apr 18, 2025",
         "topGenre": "K-pop",
         "topArtist": "ILLIT",
         "averageDuration": "2:57",
@@ -9207,7 +9217,7 @@
       "spotifyUrl": "https://open.spotify.com/playlist/0ZZ1MRnVbjFxfHWPfWe7b1",
       "embedUrl": "https://open.spotify.com/embed/playlist/0ZZ1MRnVbjFxfHWPfWe7b1",
       "owner": "Alan",
-      "coverArt": "https://image-cdn-fa.spotifycdn.com/image/ab67706c0000da84ef73e079057eab265f7b9d62",
+      "coverArt": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da84ef73e079057eab265f7b9d62",
       "trackCount": 100,
       "tracks": [
         {
@@ -10412,9 +10422,10 @@
         }
       ],
       "profile": {
-        "dateMade": null,
-        "dateStatus": "not_exposed",
-        "dateLabel": "Unavailable",
+        "dateMade": "2025-11-14T19:24:38.000Z",
+        "dateStatus": "track_add_estimate",
+        "dateBasis": "Local Spotify account cache, first cached track-add timestamp for this playlist.",
+        "dateLabel": "Nov 14, 2025",
         "topGenre": "K-pop",
         "topArtist": "NewJeans",
         "averageDuration": "3:01",
@@ -11680,14 +11691,15 @@
           "spotifyUrl": "https://open.spotify.com/track/6KiEF5zqzHiFjzdm8gChz7",
           "durationMs": 173080,
           "duration": "2:53",
-          "previewUrl": "https://p.scdn.co/mp3-preview/6515e8788480368b2555b7439d2ceef601e571af",
+          "previewUrl": "https://p.scdn.co/mp3-preview/07495722e0fff3ca490e9198e541950f6d141f30",
           "explicit": false
         }
       ],
       "profile": {
-        "dateMade": null,
-        "dateStatus": "not_exposed",
-        "dateLabel": "Unavailable",
+        "dateMade": "2026-03-03T05:02:41.652Z",
+        "dateStatus": "cache_estimate",
+        "dateBasis": "Local Spotify account cache near playlist row; treated as estimated until confirmed by Spotify added_at export.",
+        "dateLabel": "Mar 3, 2026",
         "topGenre": "K-pop",
         "topArtist": "Red Velvet",
         "averageDuration": "3:16",
@@ -12953,14 +12965,15 @@
           "spotifyUrl": "https://open.spotify.com/track/6KiEF5zqzHiFjzdm8gChz7",
           "durationMs": 173080,
           "duration": "2:53",
-          "previewUrl": "https://p.scdn.co/mp3-preview/6515e8788480368b2555b7439d2ceef601e571af",
+          "previewUrl": "https://p.scdn.co/mp3-preview/07495722e0fff3ca490e9198e541950f6d141f30",
           "explicit": false
         }
       ],
       "profile": {
-        "dateMade": null,
-        "dateStatus": "not_exposed",
-        "dateLabel": "Unavailable",
+        "dateMade": "2026-03-22T17:30:38.000Z",
+        "dateStatus": "track_add_estimate",
+        "dateBasis": "Local Spotify account cache, first cached track-add timestamp for this playlist.",
+        "dateLabel": "Mar 22, 2026",
         "topGenre": "K-pop",
         "topArtist": "Red Velvet",
         "averageDuration": "3:16",
@@ -13775,9 +13788,10 @@
         }
       ],
       "profile": {
-        "dateMade": null,
-        "dateStatus": "not_exposed",
-        "dateLabel": "Unavailable",
+        "dateMade": "2026-05-09T18:30:42.000Z",
+        "dateStatus": "track_add_estimate",
+        "dateBasis": "Local Spotify account cache, first cached track-add timestamp for this playlist.",
+        "dateLabel": "May 9, 2026",
         "topGenre": "K-pop",
         "topArtist": "NewJeans",
         "averageDuration": "3:06",
@@ -23401,7 +23415,7 @@
         "v1 -> v2, v5 -> v6, v6 -> v7, v7 -> v8, v8 -> v9 are reset points, not small edits.",
         "The pattern reads like a private listening journal: keep the emotional engine, rotate the surface language."
       ],
-      "sourceBoundary": "Dates are not included in Spotify's public embed payload; the app records that boundary instead of inventing creation dates."
+      "sourceBoundary": "Dates use local Spotify account-cache estimates where recovered; unresolved dates stay marked instead of guessed."
     },
     "largestAddition": {
       "label": "v8 -> v9",
