@@ -1,0 +1,14 @@
+{
+  "name": "spotify-driving-record",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Static record of Alan's Driving Spotify playlist versions.",
+  "scripts": {
+    "fetch:data": "node tools/fetch-spotify-data.mjs",
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

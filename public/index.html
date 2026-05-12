@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Driving Versions | spotify.aolabs.io</title>
+    <meta name="description" content="Alan's Spotify Driving playlist versions, track lists, and source-backed changes from v1 through v13.">
+    <link rel="canonical" href="https://spotify.aolabs.io/">
+    <meta property="og:title" content="Driving playlist versions">
+    <meta property="og:description" content="Track lists and adjacent changes from Alan's Driving v1 through v13 Spotify playlists.">
+    <meta property="og:url" content="https://spotify.aolabs.io/">
+    <meta property="og:type" content="website">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.svg">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="ao-link" href="https://aolabs.io/" aria-label="AO Labs">
+        <span class="ao-mark" aria-hidden="true">AO</span>
+      </a>
+      <div>
+        <p class="eyebrow">spotify.aolabs.io</p>
+        <h1>Driving playlist versions</h1>
+      </div>
+      <a class="source-link" href="https://open.spotify.com/user/1245603146?si=ac25e33ff71d4393" target="_blank" rel="noreferrer">Spotify profile</a>
+    </header>
+
+    <section class="summary-strip" aria-label="Snapshot summary">
+      <div>
+        <span class="metric" id="versionCount">13</span>
+        <span class="label">versions</span>
+      </div>
+      <div>
+        <span class="metric" id="latestCount">62</span>
+        <span class="label">latest tracks</span>
+      </div>
+      <div>
+        <span class="metric" id="uniqueCount">391</span>
+        <span class="label">unique tracks</span>
+      </div>
+      <div>
+        <span class="metric" id="placementCount">1,071</span>
+        <span class="label">placements</span>
+      </div>
+      <div class="source-state">
+        <span class="label">source</span>
+        <span id="sourceTime">Spotify snapshot</span>
+      </div>
+    </section>
+
+    <section class="analysis-band" aria-label="Playlist analysis">
+      <div>
+        <p class="eyebrow">analysis</p>
+        <h2 id="analysisHeadline">A shift from long-form structure into compact, high-rotation pop chapters.</h2>
+      </div>
+      <div id="analysisPoints" class="analysis-points"></div>
+      <p id="analysisBoundary" class="analysis-boundary"></p>
+    </section>
+
+    <main class="app-shell">
+      <aside class="version-rail" aria-label="Playlist versions">
+        <div class="rail-head">
+          <h2>Versions</h2>
+          <span id="versionRange">v1-v13</span>
+        </div>
+        <div id="versionButtons" class="version-buttons"></div>
+      </aside>
+
+      <section class="version-panel" aria-live="polite">
+        <div class="version-header">
+          <img id="coverArt" class="cover-art" alt="">
+          <div class="version-title-block">
+            <p id="selectedLabel" class="eyebrow">v13</p>
+            <h2 id="selectedName">driving v13</h2>
+            <div class="version-actions">
+              <a id="openSpotify" class="button" href="#" target="_blank" rel="noreferrer">Open in Spotify</a>
+              <button id="showLatest" class="icon-button" type="button" aria-label="Show latest version" title="Show latest version">
+                <span aria-hidden="true">13</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="version-facts">
+          <div>
+            <span id="selectedTrackCount" class="metric">62</span>
+            <span class="label">tracks</span>
+          </div>
+          <div>
+            <span id="selectedDate" class="fact-value">Not exposed</span>
+            <span class="label">date made</span>
+          </div>
+          <div>
+            <span id="selectedAdded" class="metric">44</span>
+            <span class="label">added from previous</span>
+          </div>
+          <div>
+            <span id="selectedKept" class="metric">18</span>
+            <span class="label">carried forward</span>
+          </div>
+        </div>
+
+        <div class="artist-band" id="artistBand" aria-label="Top artists"></div>
+
+        <div class="playlist-profile">
+          <div>
+            <p class="eyebrow">vibe</p>
+            <p id="playlistReading">This chapter tightened around K-pop momentum and polished hooks.</p>
+            <div id="vibeTags" class="vibe-tags"></div>
+          </div>
+          <div>
+            <p class="eyebrow">genre mix</p>
+            <div id="genreMix" class="genre-mix"></div>
+          </div>
+        </div>
+
+        <div class="track-toolbar">
+          <label class="search-label" for="trackSearch">Track filter</label>
+          <input id="trackSearch" type="search" autocomplete="off" placeholder="Song or artist">
+        </div>
+
+        <div class="track-list" id="trackList"></div>
+      </section>
+
+      <aside class="change-panel" aria-label="Version changes">
+        <div class="change-head">
+          <p class="eyebrow">selected change</p>
+          <h2 id="changeLabel">v12 -> v13</h2>
+        </div>
+        <div class="change-stats">
+          <div><strong id="addedCount">44</strong><span>added</span></div>
+          <div><strong id="removedCount">82</strong><span>removed</span></div>
+          <div><strong id="keptCount">18</strong><span>kept</span></div>
+          <div><strong id="movedCount">18</strong><span>moved</span></div>
+        </div>
+        <div class="change-focus" id="changeFocus"></div>
+
+        <div class="segmented" role="tablist" aria-label="Change list">
+          <button class="segment active" type="button" data-change-tab="added">Added</button>
+          <button class="segment" type="button" data-change-tab="removed">Removed</button>
+          <button class="segment" type="button" data-change-tab="moved">Moved</button>
+        </div>
+        <div id="changeList" class="change-list"></div>
+
+        <div class="chain">
+          <h3>Full chain</h3>
+          <div id="changeChain" class="chain-list"></div>
+        </div>
+      </aside>
+    </main>
+
+    <script src="/app.js" defer></script>
+  </body>
+</html>
