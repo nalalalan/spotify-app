@@ -1,0 +1,27 @@
+{
+  "5N0eo1NYQZaSrGzfZlKNbl": {
+    "dateMade": "2025-04-18T18:01:19.000Z",
+    "dateStatus": "cache_estimate",
+    "dateBasis": "Local Spotify account cache near playlist row; treated as estimated until confirmed by Spotify added_at export."
+  },
+  "0ZZ1MRnVbjFxfHWPfWe7b1": {
+    "dateMade": "2025-11-14T19:24:38.000Z",
+    "dateStatus": "track_add_estimate",
+    "dateBasis": "Local Spotify account cache, first cached track-add timestamp for this playlist."
+  },
+  "6lZ8EoFJG1vrIKxTWbEPO5": {
+    "dateMade": "2026-03-03T05:02:41.652Z",
+    "dateStatus": "cache_estimate",
+    "dateBasis": "Local Spotify account cache near playlist row; treated as estimated until confirmed by Spotify added_at export."
+  },
+  "7CoSJelKCnGZa48iL0dJON": {
+    "dateMade": "2026-03-22T17:30:38.000Z",
+    "dateStatus": "track_add_estimate",
+    "dateBasis": "Local Spotify account cache, first cached track-add timestamp for this playlist."
+  },
+  "3OOFyRG3WloBREqgz9C2MX": {
+    "dateMade": "2026-05-09T18:30:42.000Z",
+    "dateStatus": "track_add_estimate",
+    "dateBasis": "Local Spotify account cache, first cached track-add timestamp for this playlist."
+  }
+}

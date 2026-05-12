@@ -112,7 +112,10 @@ function renderVersionButtons() {
       return `
         <button class="version-button${active}" type="button" data-version="${version.version}">
           <span class="version-num">v${version.version}</span>
-          <span class="version-name">${escapeHtml(version.spotifyName)}</span>
+          <span class="version-main">
+            <span class="version-name">${escapeHtml(version.spotifyName)}</span>
+            <span class="version-date" title="${escapeHtml(version.profile.dateBasis || "")}">${escapeHtml(version.profile.dateLabel)}</span>
+          </span>
           <span class="version-count">${version.trackCount}</span>
         </button>
       `;
@@ -131,6 +134,7 @@ function renderPlaylistProfile(version) {
   const profile = version.profile;
   els.playlistReading.textContent = profile.reading;
   els.selectedDate.textContent = profile.dateLabel;
+  els.selectedDate.title = profile.dateBasis || "";
   els.vibeTags.innerHTML = profile.vibeTags.length
     ? profile.vibeTags.map((tag) => `<span class="vibe-tag">${escapeHtml(tag)}</span>`).join("")
     : `<span class="vibe-tag">mixed</span>`;
@@ -311,5 +315,5 @@ fetch("/playlist-data.json")
     render();
   })
   .catch((error) => {
-    document.body.innerHTML = `<main class="empty">Playlist snapshot failed to load: ${error.message}</main>`;
+    document.body.innerHTML = `<main class="empty">Playlist snapshot failed to load: ${escapeHtml(error.message)}</main>`;
   });

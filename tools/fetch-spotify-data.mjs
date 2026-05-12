@@ -6,6 +6,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const appDir = path.resolve(__dirname, "..");
 const publicDir = path.join(appDir, "public");
 const outputPath = path.join(publicDir, "playlist-data.json");
+const dateOverridesPath = path.join(__dirname, "playlist-dates.json");
 
 const SOURCE_PROFILE_URL = "https://open.spotify.com/user/1245603146?si=ac25e33ff71d4393";
 
@@ -175,21 +176,28 @@ function trackGenre(track) {
 }
 
 async function fetchPlaylist(playlist) {
+  let entity = null;
   const url = `https://open.spotify.com/embed/playlist/${playlist.id}`;
-  const response = await fetch(url, {
-    headers: {
-      "Accept": "text/html,application/xhtml+xml",
-      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-    },
-  });
 
-  if (!response.ok) {
-    throw new Error(`Spotify embed fetch failed for v${playlist.version}: ${response.status}`);
+  for (let attempt = 1; attempt <= 5; attempt += 1) {
+    const response = await fetch(url, {
+      headers: {
+        "Accept": "text/html,application/xhtml+xml",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Spotify embed fetch failed for v${playlist.version}: ${response.status}`);
+    }
+
+    const html = new TextDecoder("utf-8").decode(await response.arrayBuffer());
+    const nextData = extractNextData(html, playlist.id);
+    entity = nextData.props?.pageProps?.state?.data?.entity;
+    if (entity?.trackList?.length) break;
+    await delay(750 * attempt);
   }
 
-  const html = new TextDecoder("utf-8").decode(await response.arrayBuffer());
-  const nextData = extractNextData(html, playlist.id);
-  const entity = nextData.props?.pageProps?.state?.data?.entity;
   if (!entity?.trackList?.length) {
     throw new Error(`No trackList found for v${playlist.version}`);
   }
@@ -209,6 +217,15 @@ async function fetchPlaylist(playlist) {
   };
 }
 
+async function readDateOverrides() {
+  try {
+    return JSON.parse(await fs.readFile(dateOverridesPath, "utf8"));
+  } catch (error) {
+    if (error.code === "ENOENT") return {};
+    throw error;
+  }
+}
+
 function countBy(items, getKey) {
   const counts = new Map();
   for (const item of items) {
@@ -220,7 +237,7 @@ function countBy(items, getKey) {
     .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
 }
 
-function playlistProfile(version, previous) {
+function playlistProfile(version, previous, dateOverride) {
   const artistCounts = countBy(version.tracks, (track) => track.artist);
   const genreCounts = countBy(version.tracks, trackGenre);
   const total = version.trackCount || 1;
@@ -250,9 +267,12 @@ function playlistProfile(version, previous) {
   }));
 
   return {
-    dateMade: null,
-    dateStatus: "not_exposed",
-    dateLabel: "Unavailable",
+    dateMade: dateOverride?.dateMade || null,
+    dateStatus: dateOverride?.dateStatus || "needs_account_added_at",
+    dateBasis:
+      dateOverride?.dateBasis ||
+      "Needs Spotify added_at rows from the logged-in account or an official Spotify playlist export.",
+    dateLabel: dateOverride?.dateMade ? dateLabel(dateOverride.dateMade) : "Date pending",
     topGenre,
     topArtist,
     averageDuration: durationLabel(averageDurationSeconds * 1000),
@@ -399,12 +419,22 @@ function buildLongitudinalAnalysis(versions, changes, artistCounts) {
       "The pattern reads like a private listening journal: keep the emotional engine, rotate the surface language.",
     ],
     sourceBoundary:
-      "Dates are not included in Spotify's public embed payload; the app records that boundary instead of inventing creation dates.",
+      "Dates use local Spotify account-cache estimates where recovered; unresolved dates stay marked instead of guessed.",
   };
+}
+
+function dateLabel(value) {
+  return new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/New_York",
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  }).format(new Date(value));
 }
 
 async function main() {
   await fs.mkdir(publicDir, { recursive: true });
+  const dateOverrides = await readDateOverrides();
   const fetched = [];
   for (const playlist of PLAYLISTS) {
     fetched.push(await fetchPlaylist(playlist));
@@ -412,7 +442,11 @@ async function main() {
   }
 
   for (let index = 0; index < fetched.length; index += 1) {
-    fetched[index].profile = playlistProfile(fetched[index], fetched[index - 1] || null);
+    fetched[index].profile = playlistProfile(
+      fetched[index],
+      fetched[index - 1] || null,
+      dateOverrides[fetched[index].id],
+    );
   }
 
   const changes = fetched.slice(1).map((version, index) => diffVersions(fetched[index], version));
@@ -422,6 +456,8 @@ async function main() {
       profileUrl: SOURCE_PROFILE_URL,
       playlistIdsRecoveredFrom: "Spotify public profile rendered in the in-app browser on 2026-05-12",
       trackRowsRecoveredFrom: "Spotify public embed __NEXT_DATA__ payloads",
+      dateRowsRecoveredFrom:
+        "Local Spotify account cache after opening playlists in the installed Spotify app; Spotify public embeds do not include added_at rows.",
     },
     versions: fetched,
     changes,
