@@ -4,6 +4,7 @@
   "private": true,
   "description": "Static record of Alan's Driving Spotify playlist versions.",
   "scripts": {
+    "auth:spotify": "node tools/spotify-auth.mjs",
     "fetch:data": "node tools/fetch-spotify-data.mjs",
     "start": "node server.js",
     "dev": "node server.js"

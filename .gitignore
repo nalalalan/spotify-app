@@ -1,3 +1,7 @@
 _server.log
 _server.err.log
 node_modules/
+.env
+.env.local
+.env.production
+!.env.example

@@ -7,6 +7,7 @@ const appDir = path.resolve(__dirname, "..");
 const publicDir = path.join(appDir, "public");
 const outputPath = path.join(publicDir, "playlist-data.json");
 const dateOverridesPath = path.join(__dirname, "playlist-dates.json");
+const envPaths = [path.join(appDir, ".env.local"), path.join(appDir, ".env")];
 
 const SOURCE_PROFILE_URL = "https://open.spotify.com/user/1245603146?si=ac25e33ff71d4393";
 
@@ -120,6 +121,36 @@ function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+function parseEnv(content) {
+  const result = {};
+  for (const line of content.split(/\r?\n/)) {
+    const match = line.match(/^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)\s*$/);
+    if (!match || match[1].startsWith("#")) continue;
+    let value = match[2].trim();
+    if (
+      (value.startsWith('"') && value.endsWith('"')) ||
+      (value.startsWith("'") && value.endsWith("'"))
+    ) {
+      value = value.slice(1, -1);
+    }
+    result[match[1]] = value;
+  }
+  return result;
+}
+
+async function loadLocalEnv() {
+  for (const envPath of envPaths) {
+    try {
+      const parsed = parseEnv(await fs.readFile(envPath, "utf8"));
+      for (const [key, value] of Object.entries(parsed)) {
+        if (process.env[key] === undefined) process.env[key] = value;
+      }
+    } catch (error) {
+      if (error.code !== "ENOENT") throw error;
+    }
+  }
+}
+
 function durationLabel(ms) {
   const totalSeconds = Math.round((ms || 0) / 1000);
   const minutes = Math.floor(totalSeconds / 60);
@@ -174,6 +205,98 @@ function normalizeTrack(track, index) {
   };
 }
 
+function normalizeApiPlaylistItem(item, index) {
+  const track = item.track;
+  if (!track || track.type === "episode") return null;
+  const artists = (track.artists || []).map((artist) => artist.name).filter(Boolean);
+  const title = track.name || "Untitled";
+  const artistLine = artists.join(", ") || "Unknown artist";
+  const spotifyUrl = track.external_urls?.spotify || (track.id ? `https://open.spotify.com/track/${track.id}` : null);
+
+  return {
+    index: index + 1,
+    title,
+    artist: artistLine,
+    artists,
+    album: track.album?.name || null,
+    albumImage: largestImageUrl(track.album?.images),
+    key: `${title}:::${artistLine}`.toLowerCase(),
+    spotifyUri: track.uri || null,
+    spotifyUrl,
+    durationMs: track.duration_ms || 0,
+    duration: durationLabel(track.duration_ms || 0),
+    previewUrl: track.preview_url || null,
+    explicit: Boolean(track.explicit),
+    addedAt: item.added_at || null,
+    dateAdded: item.added_at ? item.added_at.slice(0, 10) : null,
+  };
+}
+
+function hasSpotifyCredentials() {
+  return Boolean(process.env.SPOTIFY_CLIENT_ID && process.env.SPOTIFY_CLIENT_SECRET);
+}
+
+async function getSpotifyAccessToken() {
+  if (!hasSpotifyCredentials()) return null;
+
+  const clientId = process.env.SPOTIFY_CLIENT_ID;
+  const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
+  const body = process.env.SPOTIFY_REFRESH_TOKEN
+    ? new URLSearchParams({
+        grant_type: "refresh_token",
+        refresh_token: process.env.SPOTIFY_REFRESH_TOKEN,
+      })
+    : new URLSearchParams({
+        grant_type: "client_credentials",
+      });
+
+  const response = await fetch("https://accounts.spotify.com/api/token", {
+    method: "POST",
+    headers: {
+      Authorization: `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString("base64")}`,
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body,
+  });
+
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(payload.error_description || payload.error || `Spotify token request failed: ${response.status}`);
+  }
+  if (!payload.access_token) {
+    throw new Error("Spotify token response did not include an access token.");
+  }
+  return {
+    token: payload.access_token,
+    authMode: process.env.SPOTIFY_REFRESH_TOKEN ? "Spotify Web API user authorization" : "Spotify Web API client credentials",
+  };
+}
+
+async function fetchSpotifyJson(url, accessToken) {
+  for (let attempt = 1; attempt <= 4; attempt += 1) {
+    const response = await fetch(url, {
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    if (response.status === 429) {
+      const retryAfter = Number(response.headers.get("retry-after") || attempt);
+      await delay(Math.max(retryAfter, 1) * 1000);
+      continue;
+    }
+
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      throw new Error(payload.error?.message || `Spotify API request failed: ${response.status}`);
+    }
+    return payload;
+  }
+
+  throw new Error("Spotify API rate limit did not clear after retries.");
+}
+
 function includesAny(value, terms) {
   const haystack = value.toLowerCase();
   return terms.some((term) => haystack.includes(term));
@@ -189,7 +312,7 @@ function trackGenre(track) {
   return "pop/other";
 }
 
-async function fetchPlaylist(playlist) {
+async function fetchPublicPlaylistPreview(playlist) {
   let entity = null;
   const url = `https://open.spotify.com/embed/playlist/${playlist.id}`;
   const pageUrl = `https://open.spotify.com/playlist/${playlist.id}`;
@@ -253,6 +376,54 @@ async function fetchPlaylist(playlist) {
   };
 }
 
+async function fetchSpotifyApiPlaylist(playlist, accessToken) {
+  const metaFields = "name,owner(display_name),images(url,width,height),tracks(total)";
+  const itemsFields =
+    "total,next,offset,limit,items(added_at,track(type,id,uri,name,duration_ms,explicit,external_urls.spotify,preview_url,album(name,images(url,width,height)),artists(name)))";
+  const meta = await fetchSpotifyJson(
+    `https://api.spotify.com/v1/playlists/${playlist.id}?fields=${encodeURIComponent(metaFields)}`,
+    accessToken,
+  );
+
+  const items = [];
+  let nextUrl = `https://api.spotify.com/v1/playlists/${playlist.id}/tracks?limit=50&offset=0&fields=${encodeURIComponent(itemsFields)}`;
+  let verifiedTrackCount = meta.tracks?.total || 0;
+
+  while (nextUrl) {
+    const page = await fetchSpotifyJson(nextUrl, accessToken);
+    verifiedTrackCount = page.total || verifiedTrackCount;
+    items.push(...(page.items || []));
+    nextUrl = page.next;
+  }
+
+  const tracks = items
+    .map((item, index) => normalizeApiPlaylistItem(item, index))
+    .filter(Boolean);
+
+  return {
+    version: playlist.version,
+    label: `v${playlist.version}`,
+    sourceName: playlist.sourceName,
+    spotifyName: meta.name || playlist.sourceName,
+    id: playlist.id,
+    spotifyUrl: `https://open.spotify.com/playlist/${playlist.id}`,
+    embedUrl: `https://open.spotify.com/embed/playlist/${playlist.id}`,
+    owner: meta.owner?.display_name || "Alan",
+    coverArt: largestImageUrl(meta.images),
+    trackCount: verifiedTrackCount || tracks.length,
+    recoveredTrackCount: tracks.length,
+    trackRowsComplete: tracks.length >= (verifiedTrackCount || tracks.length),
+    countBasis: "Spotify Web API playlist items total",
+    trackRowsBasis: "Spotify Web API playlist items pagination",
+    tracks,
+  };
+}
+
+async function fetchPlaylist(playlist, accessToken = null) {
+  if (accessToken) return fetchSpotifyApiPlaylist(playlist, accessToken);
+  return fetchPublicPlaylistPreview(playlist);
+}
+
 async function readDateOverrides() {
   try {
     return JSON.parse(await fs.readFile(dateOverridesPath, "utf8"));
@@ -271,6 +442,17 @@ function countBy(items, getKey) {
   return [...counts.entries()]
     .map(([name, count]) => ({ name, count }))
     .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+}
+
+function earliestAddedAt(version) {
+  const timestamps = version.tracks
+    .map((track) => track.addedAt)
+    .filter(Boolean)
+    .map((value) => new Date(value).getTime())
+    .filter(Number.isFinite);
+
+  if (!timestamps.length) return null;
+  return new Date(Math.min(...timestamps)).toISOString();
 }
 
 function playlistProfile(version, previous, dateOverride) {
@@ -301,14 +483,19 @@ function playlistProfile(version, previous, dateOverride) {
     ...genre,
     percent: Math.round((genre.count / recoveredTotal) * 100),
   }));
+  const apiDateMade = earliestAddedAt(version);
+  const dateMade = apiDateMade || dateOverride?.dateMade || null;
+  const dateStatus = apiDateMade ? "spotify_added_at_first_row" : dateOverride?.dateStatus || "needs_account_added_at";
+  const dateBasis = apiDateMade
+    ? "Earliest added_at row returned by Spotify Web API playlist items."
+    : dateOverride?.dateBasis ||
+      "Needs Spotify added_at rows from the logged-in account or an official Spotify playlist export.";
 
   return {
-    dateMade: dateOverride?.dateMade || null,
-    dateStatus: dateOverride?.dateStatus || "needs_account_added_at",
-    dateBasis:
-      dateOverride?.dateBasis ||
-      "Needs Spotify added_at rows from the logged-in account or an official Spotify playlist export.",
-    dateLabel: dateOverride?.dateMade ? dateLabel(dateOverride.dateMade) : "Date pending",
+    dateMade,
+    dateStatus,
+    dateBasis,
+    dateLabel: dateMade ? dateLabel(dateMade) : "Date pending",
     topGenre,
     topArtist,
     averageDuration: durationLabel(averageDurationSeconds * 1000),
@@ -409,6 +596,7 @@ function buildSummary(versions, changes) {
   const latest = versions.at(-1);
   const verifiedTrackPlacements = versions.reduce((sum, version) => sum + version.trackCount, 0);
   const recoveredTrackPlacements = versions.reduce((sum, version) => sum + version.tracks.length, 0);
+  const allRowsComplete = versions.every((version) => version.trackRowsComplete);
 
   const largestAddition = [...changes].sort((a, b) => b.addedCount - a.addedCount)[0] || null;
   const largestRemoval = [...changes].sort((a, b) => b.removedCount - a.removedCount)[0] || null;
@@ -421,7 +609,9 @@ function buildSummary(versions, changes) {
     recoveredTrackPlacements,
     totalTrackPlacements: verifiedTrackPlacements,
     knownUniqueTrackCount: uniqueTracks.size,
-    uniqueTrackCountBasis: "Computed only from Spotify rows recovered into this snapshot.",
+    uniqueTrackCountBasis: allRowsComplete
+      ? "Computed from all Spotify playlist rows in this snapshot."
+      : "Computed only from Spotify rows recovered into this snapshot.",
     topArtists: artistCounts,
     analysis: buildLongitudinalAnalysis(versions, changes, artistCounts),
     largestAddition: largestAddition
@@ -478,10 +668,12 @@ function dateLabel(value) {
 
 async function main() {
   await fs.mkdir(publicDir, { recursive: true });
+  await loadLocalEnv();
   const dateOverrides = await readDateOverrides();
+  const spotifyAuth = await getSpotifyAccessToken();
   const fetched = [];
   for (const playlist of PLAYLISTS) {
-    fetched.push(await fetchPlaylist(playlist));
+    fetched.push(await fetchPlaylist(playlist, spotifyAuth?.token || null));
     await delay(350);
   }
 
@@ -499,9 +691,12 @@ async function main() {
     provenance: {
       profileUrl: SOURCE_PROFILE_URL,
       playlistIdsRecoveredFrom: "Spotify public profile rendered in the in-app browser on 2026-05-12",
-      trackRowsRecoveredFrom: "Spotify public embed __NEXT_DATA__ payloads",
-      dateRowsRecoveredFrom:
-        "Local Spotify account cache after opening playlists in the installed Spotify app; Spotify public embeds do not include added_at rows.",
+      trackRowsRecoveredFrom: spotifyAuth
+        ? `${spotifyAuth.authMode}; paginated playlist-items endpoint.`
+        : "Spotify public embed __NEXT_DATA__ payloads",
+      dateRowsRecoveredFrom: spotifyAuth
+        ? `${spotifyAuth.authMode}; earliest added_at row per playlist.`
+        : "Local Spotify account cache after opening playlists in the installed Spotify app; Spotify public embeds do not include added_at rows.",
     },
     versions: fetched,
     changes,
