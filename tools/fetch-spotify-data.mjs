@@ -206,7 +206,7 @@ function normalizeTrack(track, index) {
 }
 
 function normalizeApiPlaylistItem(item, index) {
-  const track = item.track;
+  const track = item.track || item.item;
   if (!track || track.type === "episode") return null;
   const artists = (track.artists || []).map((artist) => artist.name).filter(Boolean);
   const title = track.name || "Untitled";
@@ -377,17 +377,17 @@ async function fetchPublicPlaylistPreview(playlist) {
 }
 
 async function fetchSpotifyApiPlaylist(playlist, accessToken) {
-  const metaFields = "name,owner(display_name),images(url,width,height),tracks(total)";
+  const metaFields = "name,owner(display_name),images(url,width,height),items(total)";
   const itemsFields =
-    "total,next,offset,limit,items(added_at,track(type,id,uri,name,duration_ms,explicit,external_urls.spotify,preview_url,album(name,images(url,width,height)),artists(name)))";
+    "total,next,offset,limit,items(added_at,item(type,id,uri,name,duration_ms,explicit,external_urls.spotify,preview_url,album(name,images(url,width,height)),artists(name)))";
   const meta = await fetchSpotifyJson(
     `https://api.spotify.com/v1/playlists/${playlist.id}?fields=${encodeURIComponent(metaFields)}`,
     accessToken,
   );
 
   const items = [];
-  let nextUrl = `https://api.spotify.com/v1/playlists/${playlist.id}/tracks?limit=50&offset=0&fields=${encodeURIComponent(itemsFields)}`;
-  let verifiedTrackCount = meta.tracks?.total || 0;
+  let nextUrl = `https://api.spotify.com/v1/playlists/${playlist.id}/items?limit=50&offset=0&fields=${encodeURIComponent(itemsFields)}`;
+  let verifiedTrackCount = meta.items?.total || 0;
 
   while (nextUrl) {
     const page = await fetchSpotifyJson(nextUrl, accessToken);
