@@ -11,11 +11,24 @@ const els = {
   currentTracks: document.querySelector("#currentTracks"),
   currentArtists: document.querySelector("#currentArtists"),
   openSpotify: document.querySelector("#openSpotify"),
+  mixCoverage: document.querySelector("#mixCoverage"),
+  mixBar: document.querySelector("#mixBar"),
+  mixLegend: document.querySelector("#mixLegend"),
   versionCount: document.querySelector("#versionCount"),
   songCount: document.querySelector("#songCount"),
   timeline: document.querySelector("#timeline"),
-  selectedSummary: document.querySelector("#selectedSummary"),
-  changeSummary: document.querySelector("#changeSummary"),
+  songsTitle: document.querySelector("#songsTitle"),
+  songsCoverage: document.querySelector("#songsCoverage"),
+  songsList: document.querySelector("#songsList"),
+};
+
+const genreColors = {
+  "K-pop": "#236b43",
+  classical: "#335f7c",
+  "pop/other": "#a84d55",
+  score: "#8a6a2f",
+  "novelty instrumental": "#7a5b9a",
+  "long-form instrumental": "#4f6966",
 };
 
 function number(value) {
@@ -59,8 +72,12 @@ function topArtistLine(version) {
     .join(" / ");
 }
 
+function coverageLine(version, completeWord = "songs") {
+  if (version.trackRowsComplete) return `${number(version.trackCount)} ${completeWord}`;
+  return `${number(version.recoveredTrackCount)} shown / ${number(version.trackCount)} verified`;
+}
+
 function renderOverview(version) {
-  const change = changeForVersion(version.version);
   els.currentCover.src = version.coverArt;
   els.currentCover.alt = `${version.spotifyName} cover`;
   els.rangeLabel.textContent = dateRange();
@@ -69,15 +86,58 @@ function renderOverview(version) {
   els.currentTracks.textContent = `${number(version.trackCount)} songs`;
   els.currentArtists.textContent = topArtistLine(version);
   els.openSpotify.href = version.spotifyUrl;
-  els.selectedSummary.textContent = `v${version.version} / ${version.profile.dateLabel} / ${number(version.trackCount)} songs`;
-  els.changeSummary.textContent = change
-    ? `${number(change.addedCount)} new / ${number(change.keptCount)} carried`
-    : "Starting point";
+  renderGenreMix(version);
+  renderSongs(version);
+}
+
+function renderGenreMix(version) {
+  const mix = version.profile.genreMix.filter((genre) => genre.count > 0);
+  els.mixCoverage.textContent = version.profile.genreBasis;
+  els.mixBar.innerHTML = mix
+    .map((genre) => {
+      const color = genreColors[genre.name] || "#777166";
+      return `<span style="--w:${genre.percent}%; --c:${color}" title="${escapeHtml(`${genre.name}: ${genre.percent}%`)}"></span>`;
+    })
+    .join("");
+  els.mixLegend.innerHTML = mix
+    .slice(0, 5)
+    .map((genre) => {
+      const color = genreColors[genre.name] || "#777166";
+      return `
+        <span class="mix-chip">
+          <i style="--c:${color}"></i>
+          ${escapeHtml(genre.name)} ${genre.percent}%
+        </span>
+      `;
+    })
+    .join("");
+}
+
+function renderSongs(version) {
+  els.songsTitle.textContent = `${version.spotifyName} / ${version.profile.dateLabel}`;
+  els.songsCoverage.textContent = coverageLine(version);
+  const rows = version.tracks
+    .map(
+      (track) => `
+        <a class="song-row" href="${track.spotifyUrl}" target="_blank" rel="noreferrer">
+          <span class="song-index">${number(track.index)}</span>
+          <span class="song-main">
+            <strong>${escapeHtml(track.title)}</strong>
+            <span>${escapeHtml(track.artist)}</span>
+          </span>
+          <span class="song-duration">${escapeHtml(track.duration)}</span>
+        </a>
+      `,
+    )
+    .join("");
+  const remaining = version.trackCount - version.recoveredTrackCount;
+  const pending = remaining > 0 ? `<div class="song-row pending-row">${number(remaining)} more verified on Spotify</div>` : "";
+  els.songsList.innerHTML = rows + pending;
 }
 
 function renderTimeline() {
   els.versionCount.textContent = `${number(state.data.summary.versionCount)} versions`;
-  els.songCount.textContent = `${number(state.data.summary.uniqueTrackCount)} songs`;
+  els.songCount.textContent = `${number(state.data.summary.verifiedTrackPlacements)} verified placements`;
   els.timeline.innerHTML = state.data.versions
     .map((version) => {
       const active = version.version === state.selectedVersion ? " active" : "";
@@ -86,7 +146,7 @@ function renderTimeline() {
           <img src="${version.coverArt}" alt="">
           <span class="version-id">v${version.version}</span>
           <strong>${escapeHtml(version.profile.dateLabel)}</strong>
-          <span>${number(version.trackCount)} songs</span>
+          <span>${coverageLine(version)}</span>
         </button>
       `;
     })

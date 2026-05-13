@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-13T06:11:35.821Z",
+  "generatedAt": "2026-05-13T07:24:26.616Z",
   "provenance": {
     "profileUrl": "https://open.spotify.com/user/1245603146?si=ac25e33ff71d4393",
     "playlistIdsRecoveredFrom": "Spotify public profile rendered in the in-app browser on 2026-05-12",
@@ -17,7 +17,11 @@
       "embedUrl": "https://open.spotify.com/embed/playlist/3Jj7M4vjtZBoxqLBgyJ0Ok",
       "owner": "Alan",
       "coverArt": "https://mosaic.scdn.co/640/ab67616d00001e021ec80750e21e23a99dae1aaaab67616d00001e02693b6d42c8432f0f860e11f5ab67616d00001e02818e8e1e60603bb316aced4bab67616d00001e02decb3826194bc279b79f3b10",
-      "trackCount": 100,
+      "trackCount": 168,
+      "recoveredTrackCount": 100,
+      "trackRowsComplete": false,
+      "countBasis": "Spotify public playlist page totalCount",
+      "trackRowsBasis": "Spotify public embed track rows",
       "tracks": [
         {
           "index": 1,
@@ -1228,6 +1232,7 @@
         "topGenre": "K-pop",
         "topArtist": "TWICE",
         "averageDuration": "5:32",
+        "genreBasis": "100 of 168 recovered rows",
         "genreMix": [
           {
             "name": "K-pop",
@@ -1309,6 +1314,10 @@
       "owner": "Alan",
       "coverArt": "https://mosaic.scdn.co/640/ab67616d00001e0208afa023781dc4841319f3fcab67616d00001e0225ef3cec1eceefd4db2f91c8ab67616d00001e02579e945923463492cb43a5ceab67616d00001e02d8cc2281fcd4519ca020926b",
       "trackCount": 70,
+      "recoveredTrackCount": 70,
+      "trackRowsComplete": true,
+      "countBasis": "Spotify public playlist page totalCount",
+      "trackRowsBasis": "Spotify public embed track rows",
       "tracks": [
         {
           "index": 1,
@@ -2159,6 +2168,7 @@
         "topGenre": "K-pop",
         "topArtist": "Red Velvet",
         "averageDuration": "3:18",
+        "genreBasis": "all 70 songs",
         "genreMix": [
           {
             "name": "K-pop",
@@ -2229,6 +2239,10 @@
       "owner": "Alan",
       "coverArt": "https://mosaic.scdn.co/640/ab67616d00001e022e31a8a740f621473d21dc75ab67616d00001e029d28fd01859073a3ae6ea209ab67616d00001e02af2fda9fb591d43c355c2ac3ab67616d00001e02edf5b257be1d6593e81bb45f",
       "trackCount": 43,
+      "recoveredTrackCount": 43,
+      "trackRowsComplete": true,
+      "countBasis": "Spotify public playlist page totalCount",
+      "trackRowsBasis": "Spotify public embed track rows",
       "tracks": [
         {
           "index": 1,
@@ -2755,6 +2769,7 @@
         "topGenre": "K-pop",
         "topArtist": "LE SSERAFIM",
         "averageDuration": "3:07",
+        "genreBasis": "all 43 songs",
         "genreMix": [
           {
             "name": "K-pop",
@@ -2820,6 +2835,10 @@
       "owner": "Alan",
       "coverArt": "https://mosaic.scdn.co/640/ab67616d00001e024d00ac692bae6ce08d2b49adab67616d00001e0281d97a31253b898bc4149195ab67616d00001e02e5cc60bec326c779d17ee76eab67616d00001e02f037c5fb9de6c78726cb8e2c",
       "trackCount": 36,
+      "recoveredTrackCount": 36,
+      "trackRowsComplete": true,
+      "countBasis": "Spotify public playlist page totalCount",
+      "trackRowsBasis": "Spotify public embed track rows",
       "tracks": [
         {
           "index": 1,
@@ -3262,6 +3281,7 @@
         "topGenre": "K-pop",
         "topArtist": "LE SSERAFIM",
         "averageDuration": "3:07",
+        "genreBasis": "all 36 songs",
         "genreMix": [
           {
             "name": "K-pop",
@@ -3327,6 +3347,10 @@
       "owner": "Alan",
       "coverArt": "https://mosaic.scdn.co/640/ab67616d00001e02090cfa22962b115ac530674cab67616d00001e021b8ae147aceb9fc130391287ab67616d00001e02a75d7535b8657385f8232449ab67616d00001e02bee30ca9e2a95d5a75358446",
       "trackCount": 60,
+      "recoveredTrackCount": 60,
+      "trackRowsComplete": true,
+      "countBasis": "Spotify public playlist page totalCount",
+      "trackRowsBasis": "Spotify public embed track rows",
       "tracks": [
         {
           "index": 1,
@@ -4057,6 +4081,7 @@
         "topGenre": "K-pop",
         "topArtist": "LE SSERAFIM",
         "averageDuration": "3:02",
+        "genreBasis": "all 60 songs",
         "genreMix": [
           {
             "name": "K-pop",
@@ -4121,7 +4146,11 @@
       "embedUrl": "https://open.spotify.com/embed/playlist/4nkNtdWTbfmIeiyBj9akUn",
       "owner": "Alan",
       "coverArt": "https://mosaic.scdn.co/640/ab67616d00001e020744690248ef3ba7b776ea7bab67616d00001e0246085aa1855bd888abc51a5aab67616d00001e027e76c17cfbc723800452a24fab67616d00001e0282372892b14fe93311f713df",
-      "trackCount": 100,
+      "trackCount": 266,
+      "recoveredTrackCount": 100,
+      "trackRowsComplete": false,
+      "countBasis": "Spotify public playlist page totalCount",
+      "trackRowsBasis": "Spotify public embed track rows",
       "tracks": [
         {
           "index": 1,
@@ -5332,6 +5361,7 @@
         "topGenre": "K-pop",
         "topArtist": "NewJeans",
         "averageDuration": "3:05",
+        "genreBasis": "100 of 266 recovered rows",
         "genreMix": [
           {
             "name": "K-pop",
@@ -5396,7 +5426,11 @@
       "embedUrl": "https://open.spotify.com/embed/playlist/4EoYpWkv6NEYAJNu1nwRsy",
       "owner": "Alan",
       "coverArt": "https://mosaic.scdn.co/640/ab67616d00001e023fbba332beb424bb878703f6ab67616d00001e0271a70331062453ece06f8b79ab67616d00001e028c4a282e84a53c1c8acf129aab67616d00001e029d28fd01859073a3ae6ea209",
-      "trackCount": 100,
+      "trackCount": 172,
+      "recoveredTrackCount": 100,
+      "trackRowsComplete": false,
+      "countBasis": "Spotify public playlist page totalCount",
+      "trackRowsBasis": "Spotify public embed track rows",
       "tracks": [
         {
           "index": 1,
@@ -6607,6 +6641,7 @@
         "topGenre": "K-pop",
         "topArtist": "Red Velvet",
         "averageDuration": "3:16",
+        "genreBasis": "100 of 172 recovered rows",
         "genreMix": [
           {
             "name": "K-pop",
@@ -6655,9 +6690,10 @@
         ],
         "vibeTags": [
           "K-pop core",
-          "short high-rotation songs"
+          "short high-rotation songs",
+          "tightened"
         ],
-        "reading": "This chapter held steady around K-pop momentum and polished hooks."
+        "reading": "This chapter tightened around K-pop momentum and polished hooks."
       }
     },
     {
@@ -6670,7 +6706,11 @@
       "embedUrl": "https://open.spotify.com/embed/playlist/5z9NCWJSJxWcCIj7nle3nL",
       "owner": "Alan",
       "coverArt": "https://mosaic.scdn.co/640/ab67616d00001e025fb4a9cfbeb3b7beb337ed02ab67616d00001e0281d97a31253b898bc4149195ab67616d00001e02b657fbb27b17e7bd4691c2b2ab67616d00001e02bc125f40131dd5869b2ec36c",
-      "trackCount": 100,
+      "trackCount": 197,
+      "recoveredTrackCount": 100,
+      "trackRowsComplete": false,
+      "countBasis": "Spotify public playlist page totalCount",
+      "trackRowsBasis": "Spotify public embed track rows",
       "tracks": [
         {
           "index": 1,
@@ -7881,6 +7921,7 @@
         "topGenre": "K-pop",
         "topArtist": "aespa",
         "averageDuration": "3:12",
+        "genreBasis": "100 of 197 recovered rows",
         "genreMix": [
           {
             "name": "K-pop",
@@ -7929,9 +7970,10 @@
         ],
         "vibeTags": [
           "K-pop core",
-          "short high-rotation songs"
+          "short high-rotation songs",
+          "expanded"
         ],
-        "reading": "This chapter held steady around K-pop momentum and polished hooks."
+        "reading": "This chapter expanded around K-pop momentum and polished hooks."
       }
     },
     {
@@ -7944,7 +7986,11 @@
       "embedUrl": "https://open.spotify.com/embed/playlist/5N0eo1NYQZaSrGzfZlKNbl",
       "owner": "Alan",
       "coverArt": "https://mosaic.scdn.co/640/ab67616d00001e022e31a8a740f621473d21dc75ab67616d00001e02de5d7fcc7c044c9813e99b33ab67616d00001e02e27ba26bc14a563bf3d09882ab67616d00001e02fad8c4176e8df7173479f959",
-      "trackCount": 100,
+      "trackCount": 157,
+      "recoveredTrackCount": 100,
+      "trackRowsComplete": false,
+      "countBasis": "Spotify public playlist page totalCount",
+      "trackRowsBasis": "Spotify public embed track rows",
       "tracks": [
         {
           "index": 1,
@@ -9155,6 +9201,7 @@
         "topGenre": "K-pop",
         "topArtist": "ILLIT",
         "averageDuration": "2:57",
+        "genreBasis": "100 of 157 recovered rows",
         "genreMix": [
           {
             "name": "K-pop",
@@ -9203,9 +9250,10 @@
         ],
         "vibeTags": [
           "K-pop core",
-          "short high-rotation songs"
+          "short high-rotation songs",
+          "tightened"
         ],
-        "reading": "This chapter held steady around K-pop momentum and polished hooks."
+        "reading": "This chapter tightened around K-pop momentum and polished hooks."
       }
     },
     {
@@ -9218,7 +9266,11 @@
       "embedUrl": "https://open.spotify.com/embed/playlist/0ZZ1MRnVbjFxfHWPfWe7b1",
       "owner": "Alan",
       "coverArt": "https://image-cdn-fa.spotifycdn.com/image/ab67706c0000da84ef73e079057eab265f7b9d62",
-      "trackCount": 100,
+      "trackCount": 414,
+      "recoveredTrackCount": 100,
+      "trackRowsComplete": false,
+      "countBasis": "Spotify public playlist page totalCount",
+      "trackRowsBasis": "Spotify public embed track rows",
       "tracks": [
         {
           "index": 1,
@@ -10429,6 +10481,7 @@
         "topGenre": "K-pop",
         "topArtist": "NewJeans",
         "averageDuration": "3:01",
+        "genreBasis": "100 of 414 recovered rows",
         "genreMix": [
           {
             "name": "K-pop",
@@ -10477,9 +10530,10 @@
         ],
         "vibeTags": [
           "K-pop core",
-          "short high-rotation songs"
+          "short high-rotation songs",
+          "expanded"
         ],
-        "reading": "This chapter held steady around K-pop momentum and polished hooks."
+        "reading": "This chapter expanded around K-pop momentum and polished hooks."
       }
     },
     {
@@ -10492,7 +10546,11 @@
       "embedUrl": "https://open.spotify.com/embed/playlist/6lZ8EoFJG1vrIKxTWbEPO5",
       "owner": "Alan",
       "coverArt": "https://mosaic.scdn.co/640/ab67616d00001e023fbba332beb424bb878703f6ab67616d00001e0271a70331062453ece06f8b79ab67616d00001e028c4a282e84a53c1c8acf129aab67616d00001e029d28fd01859073a3ae6ea209",
-      "trackCount": 100,
+      "trackCount": 214,
+      "recoveredTrackCount": 100,
+      "trackRowsComplete": false,
+      "countBasis": "Spotify public playlist page totalCount",
+      "trackRowsBasis": "Spotify public embed track rows",
       "tracks": [
         {
           "index": 1,
@@ -11703,6 +11761,7 @@
         "topGenre": "K-pop",
         "topArtist": "Red Velvet",
         "averageDuration": "3:16",
+        "genreBasis": "100 of 214 recovered rows",
         "genreMix": [
           {
             "name": "K-pop",
@@ -11751,9 +11810,10 @@
         ],
         "vibeTags": [
           "K-pop core",
-          "short high-rotation songs"
+          "short high-rotation songs",
+          "tightened"
         ],
-        "reading": "This chapter held steady around K-pop momentum and polished hooks."
+        "reading": "This chapter tightened around K-pop momentum and polished hooks."
       }
     },
     {
@@ -11766,7 +11826,11 @@
       "embedUrl": "https://open.spotify.com/embed/playlist/7CoSJelKCnGZa48iL0dJON",
       "owner": "Alan",
       "coverArt": "https://mosaic.scdn.co/640/ab67616d00001e023fbba332beb424bb878703f6ab67616d00001e0271a70331062453ece06f8b79ab67616d00001e028c4a282e84a53c1c8acf129aab67616d00001e029d28fd01859073a3ae6ea209",
-      "trackCount": 100,
+      "trackCount": 223,
+      "recoveredTrackCount": 100,
+      "trackRowsComplete": false,
+      "countBasis": "Spotify public playlist page totalCount",
+      "trackRowsBasis": "Spotify public embed track rows",
       "tracks": [
         {
           "index": 1,
@@ -12977,6 +13041,7 @@
         "topGenre": "K-pop",
         "topArtist": "Red Velvet",
         "averageDuration": "3:16",
+        "genreBasis": "100 of 223 recovered rows",
         "genreMix": [
           {
             "name": "K-pop",
@@ -13025,9 +13090,10 @@
         ],
         "vibeTags": [
           "K-pop core",
-          "short high-rotation songs"
+          "short high-rotation songs",
+          "expanded"
         ],
-        "reading": "This chapter held steady around K-pop momentum and polished hooks."
+        "reading": "This chapter expanded around K-pop momentum and polished hooks."
       }
     },
     {
@@ -13041,6 +13107,10 @@
       "owner": "Alan",
       "coverArt": "https://mosaic.scdn.co/640/ab67616d00001e023d09075f6c7fabe9a7234cb3ab67616d00001e029d28fd01859073a3ae6ea209ab67616d00001e02cbc3556fdf9cf0203d86657aab67616d00001e02d8cc2281fcd4519ca020926b",
       "trackCount": 62,
+      "recoveredTrackCount": 62,
+      "trackRowsComplete": true,
+      "countBasis": "Spotify public playlist page totalCount",
+      "trackRowsBasis": "Spotify public embed track rows",
       "tracks": [
         {
           "index": 1,
@@ -13795,6 +13865,7 @@
         "topGenre": "K-pop",
         "topArtist": "NewJeans",
         "averageDuration": "3:06",
+        "genreBasis": "all 62 songs",
         "genreMix": [
           {
             "name": "K-pop",
@@ -13861,7 +13932,7 @@
       "removedCount": 98,
       "keptCount": 2,
       "movedCount": 2,
-      "netChange": -30,
+      "netChange": -98,
       "added": [
         {
           "index": 1,
@@ -16895,7 +16966,7 @@
       "removedCount": 25,
       "keptCount": 35,
       "movedCount": 35,
-      "netChange": 40,
+      "netChange": 206,
       "added": [
         {
           "index": 3,
@@ -17812,7 +17883,7 @@
       "removedCount": 63,
       "keptCount": 37,
       "movedCount": 36,
-      "netChange": 0,
+      "netChange": -94,
       "added": [
         {
           "index": 2,
@@ -18729,7 +18800,7 @@
       "removedCount": 55,
       "keptCount": 45,
       "movedCount": 45,
-      "netChange": 0,
+      "netChange": 25,
       "added": [
         {
           "index": 2,
@@ -19646,7 +19717,7 @@
       "removedCount": 76,
       "keptCount": 24,
       "movedCount": 24,
-      "netChange": 0,
+      "netChange": -40,
       "added": [
         {
           "index": 1,
@@ -20563,7 +20634,7 @@
       "removedCount": 68,
       "keptCount": 32,
       "movedCount": 31,
-      "netChange": 0,
+      "netChange": 257,
       "added": [
         {
           "index": 1,
@@ -21480,7 +21551,7 @@
       "removedCount": 66,
       "keptCount": 34,
       "movedCount": 34,
-      "netChange": 0,
+      "netChange": -200,
       "added": [
         {
           "index": 2,
@@ -22397,7 +22468,7 @@
       "removedCount": 0,
       "keptCount": 100,
       "movedCount": 0,
-      "netChange": 0,
+      "netChange": 9,
       "added": [],
       "removed": [],
       "moved": [],
@@ -22443,7 +22514,7 @@
       "removedCount": 82,
       "keptCount": 18,
       "movedCount": 18,
-      "netChange": -38,
+      "netChange": -161,
       "added": [
         {
           "index": 2,
@@ -23355,8 +23426,11 @@
     "versionCount": 13,
     "latestVersion": 13,
     "latestTrackCount": 62,
-    "totalTrackPlacements": 1071,
-    "uniqueTrackCount": 391,
+    "verifiedTrackPlacements": 2082,
+    "recoveredTrackPlacements": 1071,
+    "totalTrackPlacements": 2082,
+    "knownUniqueTrackCount": 391,
+    "uniqueTrackCountBasis": "Computed only from Spotify rows recovered into this snapshot.",
     "topArtists": [
       {
         "name": "Red Velvet",

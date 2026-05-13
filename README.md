@@ -2,7 +2,7 @@
 
 Static AO Labs app for `spotify.aolabs.io`.
 
-The source snapshot comes from Alan's public Spotify profile and the public Spotify playlist embed payloads. The page shows each Driving playlist version, every recovered track row, and adjacent changes from v1 to v13.
+The source snapshot comes from Alan's public Spotify profile, public Spotify playlist page counts, public embed track rows, and date screenshots. The page shows each Driving playlist version, verified song totals, recovered track rows, and the selected playlist's songs.
 
 ## Run Locally
 

@@ -136,12 +136,26 @@ function decodeHtmlEntities(value) {
     .replace(/&gt;/g, ">");
 }
 
+function largestImageUrl(sources = []) {
+  return [...sources]
+    .filter((source) => source?.url)
+    .sort((a, b) => (b.width || b.height || 0) - (a.width || a.height || 0))[0]?.url || null;
+}
+
 function extractNextData(html, playlistId) {
   const match = html.match(/<script id="__NEXT_DATA__" type="application\/json">([\s\S]*?)<\/script>/);
   if (!match) {
     throw new Error(`Missing Spotify embed data for ${playlistId}`);
   }
   return JSON.parse(decodeHtmlEntities(match[1]));
+}
+
+function extractInitialState(html, playlistId) {
+  const match = html.match(/<script id="initialState" type="text\/plain">([\s\S]*?)<\/script>/);
+  if (!match) {
+    throw new Error(`Missing Spotify playlist page state for ${playlistId}`);
+  }
+  return JSON.parse(Buffer.from(match[1], "base64").toString("utf8"));
 }
 
 function normalizeTrack(track, index) {
@@ -178,6 +192,7 @@ function trackGenre(track) {
 async function fetchPlaylist(playlist) {
   let entity = null;
   const url = `https://open.spotify.com/embed/playlist/${playlist.id}`;
+  const pageUrl = `https://open.spotify.com/playlist/${playlist.id}`;
 
   for (let attempt = 1; attempt <= 5; attempt += 1) {
     const response = await fetch(url, {
@@ -202,6 +217,23 @@ async function fetchPlaylist(playlist) {
     throw new Error(`No trackList found for v${playlist.version}`);
   }
 
+  const pageResponse = await fetch(pageUrl, {
+    headers: {
+      "Accept": "text/html,application/xhtml+xml",
+      "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15",
+    },
+  });
+
+  if (!pageResponse.ok) {
+    throw new Error(`Spotify playlist page fetch failed for v${playlist.version}: ${pageResponse.status}`);
+  }
+
+  const pageHtml = new TextDecoder("utf-8").decode(await pageResponse.arrayBuffer());
+  const pageState = extractInitialState(pageHtml, playlist.id);
+  const pageEntity = pageState.entities?.items?.[`spotify:playlist:${playlist.id}`] || {};
+  const verifiedTrackCount = pageEntity.content?.totalCount || entity.trackList.length;
+  const tracks = entity.trackList.map(normalizeTrack);
+
   return {
     version: playlist.version,
     label: `v${playlist.version}`,
@@ -210,10 +242,14 @@ async function fetchPlaylist(playlist) {
     id: playlist.id,
     spotifyUrl: `https://open.spotify.com/playlist/${playlist.id}`,
     embedUrl: url,
-    owner: entity.subtitle || "Alan",
-    coverArt: entity.coverArt?.sources?.[0]?.url || null,
-    trackCount: entity.trackList.length,
-    tracks: entity.trackList.map(normalizeTrack),
+    owner: pageEntity.ownerV2?.data?.name || entity.subtitle || "Alan",
+    coverArt: largestImageUrl(pageEntity.images?.items?.[0]?.sources) || largestImageUrl(entity.coverArt?.sources),
+    trackCount: verifiedTrackCount,
+    recoveredTrackCount: tracks.length,
+    trackRowsComplete: tracks.length >= verifiedTrackCount,
+    countBasis: "Spotify public playlist page totalCount",
+    trackRowsBasis: "Spotify public embed track rows",
+    tracks,
   };
 }
 
@@ -240,15 +276,15 @@ function countBy(items, getKey) {
 function playlistProfile(version, previous, dateOverride) {
   const artistCounts = countBy(version.tracks, (track) => track.artist);
   const genreCounts = countBy(version.tracks, trackGenre);
-  const total = version.trackCount || 1;
+  const recoveredTotal = version.tracks.length || 1;
   const topGenre = genreCounts[0]?.name || "mixed";
   const topArtist = artistCounts[0]?.name || "mixed";
-  const classicalShare = (genreCounts.find((genre) => genre.name === "classical")?.count || 0) / total;
-  const kpopShare = (genreCounts.find((genre) => genre.name === "K-pop")?.count || 0) / total;
-  const scoreShare = (genreCounts.find((genre) => genre.name === "score")?.count || 0) / total;
-  const noveltyShare = (genreCounts.find((genre) => genre.name === "novelty instrumental")?.count || 0) / total;
+  const classicalShare = (genreCounts.find((genre) => genre.name === "classical")?.count || 0) / recoveredTotal;
+  const kpopShare = (genreCounts.find((genre) => genre.name === "K-pop")?.count || 0) / recoveredTotal;
+  const scoreShare = (genreCounts.find((genre) => genre.name === "score")?.count || 0) / recoveredTotal;
+  const noveltyShare = (genreCounts.find((genre) => genre.name === "novelty instrumental")?.count || 0) / recoveredTotal;
   const averageDurationSeconds = Math.round(
-    version.tracks.reduce((sum, track) => sum + track.durationMs, 0) / total / 1000,
+    version.tracks.reduce((sum, track) => sum + track.durationMs, 0) / recoveredTotal / 1000,
   );
   const tags = [];
 
@@ -263,7 +299,7 @@ function playlistProfile(version, previous, dateOverride) {
 
   const genreMix = genreCounts.map((genre) => ({
     ...genre,
-    percent: Math.round((genre.count / total) * 100),
+    percent: Math.round((genre.count / recoveredTotal) * 100),
   }));
 
   return {
@@ -276,6 +312,9 @@ function playlistProfile(version, previous, dateOverride) {
     topGenre,
     topArtist,
     averageDuration: durationLabel(averageDurationSeconds * 1000),
+    genreBasis: version.trackRowsComplete
+      ? `all ${version.trackCount} songs`
+      : `${version.recoveredTrackCount} of ${version.trackCount} recovered rows`,
     genreMix,
     topArtists: artistCounts.slice(0, 8),
     vibeTags: tags.slice(0, 5),
@@ -368,6 +407,8 @@ function buildSummary(versions, changes) {
   const uniqueTracks = new Map(allTracks.map((track) => [track.key, track]));
   const artistCounts = countBy(allTracks, (track) => track.artist).slice(0, 12);
   const latest = versions.at(-1);
+  const verifiedTrackPlacements = versions.reduce((sum, version) => sum + version.trackCount, 0);
+  const recoveredTrackPlacements = versions.reduce((sum, version) => sum + version.tracks.length, 0);
 
   const largestAddition = [...changes].sort((a, b) => b.addedCount - a.addedCount)[0] || null;
   const largestRemoval = [...changes].sort((a, b) => b.removedCount - a.removedCount)[0] || null;
@@ -376,8 +417,11 @@ function buildSummary(versions, changes) {
     versionCount: versions.length,
     latestVersion: latest.version,
     latestTrackCount: latest.trackCount,
-    totalTrackPlacements: allTracks.length,
-    uniqueTrackCount: uniqueTracks.size,
+    verifiedTrackPlacements,
+    recoveredTrackPlacements,
+    totalTrackPlacements: verifiedTrackPlacements,
+    knownUniqueTrackCount: uniqueTracks.size,
+    uniqueTrackCountBasis: "Computed only from Spotify rows recovered into this snapshot.",
     topArtists: artistCounts,
     analysis: buildLongitudinalAnalysis(versions, changes, artistCounts),
     largestAddition: largestAddition
