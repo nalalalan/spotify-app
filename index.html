@@ -10,8 +10,8 @@
     <meta property="og:description" content="A quiet visual timeline of Alan's Driving Spotify playlist versions.">
     <meta property="og:url" content="https://spotify.aolabs.io/">
     <meta property="og:type" content="website">
-    <link rel="icon" href="/icon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/apple-touch-icon.svg">
+    <link rel="icon" href="https://aolabs.io/favicon.svg?v=20260513-ao-ring" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="https://aolabs.io/marks/ao-ink.svg?v=20260513-ao-ring">
     <link rel="manifest" href="/site.webmanifest">
     <link rel="stylesheet" href="/styles.css">
   </head>
@@ -40,6 +40,14 @@
             <span id="currentTracks">62 songs</span>
             <span id="currentArtists">NewJeans / Red Velvet / ILLIT</span>
           </div>
+          <div class="mix-panel" aria-label="Genre mix">
+            <div class="mix-head">
+              <span>Genre mix</span>
+              <strong id="mixCoverage">all 62 songs</strong>
+            </div>
+            <div id="mixBar" class="mix-bar" aria-hidden="true"></div>
+            <div id="mixLegend" class="mix-legend"></div>
+          </div>
           <a id="openSpotify" class="open-link" href="#" target="_blank" rel="noreferrer">Open in Spotify</a>
         </div>
       </section>
@@ -52,15 +60,15 @@
         <div id="timeline" class="timeline"></div>
       </section>
 
-      <section class="quiet-panel" aria-label="Selected version details">
-        <div>
-          <span class="small-label">Selected</span>
-          <strong id="selectedSummary">v13 / May 9, 2026 / 62 songs</strong>
+      <section class="songs-section" aria-label="Selected playlist songs">
+        <div class="songs-head">
+          <div>
+            <span class="small-label">Songs</span>
+            <strong id="songsTitle">driving v13</strong>
+          </div>
+          <span id="songsCoverage">62 songs</span>
         </div>
-        <div>
-          <span class="small-label">From previous</span>
-          <strong id="changeSummary">44 new / 18 carried</strong>
-        </div>
+        <div id="songsList" class="songs-list"></div>
       </section>
     </main>
 

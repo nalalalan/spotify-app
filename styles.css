@@ -146,7 +146,7 @@ button {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-bottom: 18px;
+  margin-bottom: 14px;
 }
 
 .current-meta span {
@@ -157,6 +157,68 @@ button {
   font-size: 0.9rem;
   font-weight: 800;
   padding: 7px 10px;
+}
+
+.mix-panel {
+  width: min(620px, 100%);
+  margin: 0 0 18px;
+}
+
+.mix-head,
+.songs-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: end;
+}
+
+.mix-head span,
+.mix-head strong,
+.songs-head > span {
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.mix-bar {
+  display: flex;
+  overflow: hidden;
+  height: 14px;
+  margin-top: 8px;
+  border: 1px solid rgba(23, 23, 19, 0.15);
+  border-radius: 999px;
+  background: rgba(255, 253, 248, 0.72);
+}
+
+.mix-bar span {
+  width: max(var(--w), 3%);
+  min-width: 8px;
+  background: var(--c);
+}
+
+.mix-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 9px;
+}
+
+.mix-chip {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.mix-chip i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--c);
 }
 
 .timeline-wrap {
@@ -229,29 +291,78 @@ button {
   font-weight: 780;
 }
 
-.quiet-panel {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1px;
-  overflow: hidden;
+.songs-section {
   margin-top: 16px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: var(--line);
+  background: rgba(255, 253, 248, 0.68);
+  box-shadow: 0 8px 24px rgba(45, 38, 25, 0.04);
 }
 
-.quiet-panel > div {
-  min-width: 0;
-  padding: 14px 16px;
-  background: rgba(255, 253, 248, 0.72);
+.songs-head {
+  padding: 15px 16px;
+  border-bottom: 1px solid var(--line);
 }
 
-.quiet-panel strong {
+.songs-head strong {
   display: block;
   margin-top: 4px;
-  font-size: 1rem;
+  font-size: 1.04rem;
   line-height: 1.2;
-  overflow-wrap: anywhere;
+}
+
+.songs-list {
+  max-height: 460px;
+  overflow: auto;
+}
+
+.song-row {
+  display: grid;
+  grid-template-columns: 3ch minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  min-height: 46px;
+  padding: 9px 16px;
+  border-bottom: 1px solid rgba(217, 209, 193, 0.72);
+  color: inherit;
+  text-decoration: none;
+}
+
+.song-row:hover {
+  background: rgba(235, 228, 215, 0.48);
+}
+
+.song-index,
+.song-duration,
+.song-main span {
+  color: var(--muted);
+  font-size: 0.86rem;
+  font-weight: 760;
+}
+
+.song-main {
+  min-width: 0;
+}
+
+.song-main strong,
+.song-main span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.song-main strong {
+  font-size: 0.95rem;
+  line-height: 1.15;
+}
+
+.pending-row {
+  grid-template-columns: 1fr;
+  justify-items: center;
+  min-height: 44px;
+  color: var(--muted);
+  font-weight: 850;
 }
 
 .empty {
@@ -306,7 +417,22 @@ button {
     scroll-snap-align: start;
   }
 
-  .quiet-panel {
-    grid-template-columns: 1fr;
+  .mix-head,
+  .songs-head {
+    align-items: start;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .songs-list {
+    max-height: 520px;
+  }
+
+  .song-row {
+    grid-template-columns: 2.6ch minmax(0, 1fr);
+  }
+
+  .song-duration {
+    display: none;
   }
 }
