@@ -155,7 +155,7 @@ function renderGenreMix(version) {
 
 function renderSongs(version) {
   els.songsTitle.textContent = `${version.spotifyName} / ${version.profile.dateLabel}`;
-  els.songsCoverage.textContent = `${coverageLine(version)} / history rank`;
+  els.songsCoverage.textContent = `${coverageLine(version)} / repeat rank`;
   const rows = rankedTracks(version)
     .map((track, rankIndex) => {
       const rank = historyRank(track);

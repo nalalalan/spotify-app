@@ -79,13 +79,6 @@ button {
   text-transform: uppercase;
 }
 
-.brand h1 {
-  margin: 2px 0 0;
-  font-size: clamp(1.5rem, 3vw, 2.55rem);
-  line-height: 1;
-  letter-spacing: 0;
-}
-
 .profile-link,
 .open-link {
   display: inline-flex;
@@ -135,7 +128,7 @@ button {
   min-width: 0;
 }
 
-.current-copy h2 {
+.current-copy h1 {
   margin: 10px 0 14px;
   font-size: clamp(2.8rem, 9vw, 6.8rem);
   line-height: 0.9;
@@ -401,7 +394,7 @@ button {
     width: min(210px, 72vw);
   }
 
-  .current-copy h2 {
+  .current-copy h1 {
     font-size: clamp(2rem, 10.5vw, 3rem);
     line-height: 0.98;
     word-break: break-word;
