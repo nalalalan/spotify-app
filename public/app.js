@@ -31,6 +31,8 @@ const genreColors = {
   "long-form instrumental": "#4f6966",
 };
 
+let historyRanks = new Map();
+
 function number(value) {
   return new Intl.NumberFormat("en-US").format(value);
 }
@@ -50,6 +52,44 @@ function byArtist(tracks) {
   return [...counts.entries()]
     .map(([name, count]) => ({ name, count }))
     .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+}
+
+function buildHistoryRanks(versions) {
+  const ranks = new Map();
+  for (const version of versions) {
+    const seenInVersion = new Set();
+    for (const track of version.tracks) {
+      if (seenInVersion.has(track.key)) continue;
+      seenInVersion.add(track.key);
+      const current = ranks.get(track.key) || {
+        count: 0,
+        firstVersion: version.version,
+        lastVersion: version.version,
+      };
+      current.count += 1;
+      current.firstVersion = Math.min(current.firstVersion, version.version);
+      current.lastVersion = Math.max(current.lastVersion, version.version);
+      ranks.set(track.key, current);
+    }
+  }
+  return ranks;
+}
+
+function historyRank(track) {
+  return historyRanks.get(track.key) || { count: 1, firstVersion: state.selectedVersion, lastVersion: state.selectedVersion };
+}
+
+function rankedTracks(version) {
+  return [...version.tracks].sort((a, b) => {
+    const aRank = historyRank(a);
+    const bRank = historyRank(b);
+    return (
+      bRank.count - aRank.count ||
+      bRank.lastVersion - aRank.lastVersion ||
+      aRank.firstVersion - bRank.firstVersion ||
+      a.index - b.index
+    );
+  });
 }
 
 function selectedVersion() {
@@ -115,20 +155,21 @@ function renderGenreMix(version) {
 
 function renderSongs(version) {
   els.songsTitle.textContent = `${version.spotifyName} / ${version.profile.dateLabel}`;
-  els.songsCoverage.textContent = coverageLine(version);
-  const rows = version.tracks
-    .map(
-      (track) => `
+  els.songsCoverage.textContent = `${coverageLine(version)} / history rank`;
+  const rows = rankedTracks(version)
+    .map((track, rankIndex) => {
+      const rank = historyRank(track);
+      return `
         <a class="song-row" href="${track.spotifyUrl}" target="_blank" rel="noreferrer">
-          <span class="song-index">${number(track.index)}</span>
+          <span class="song-index">${number(rankIndex + 1)}</span>
           <span class="song-main">
             <strong>${escapeHtml(track.title)}</strong>
-            <span>${escapeHtml(track.artist)}</span>
+            <span>${escapeHtml(track.artist)} · ${number(rank.count)}x</span>
           </span>
           <span class="song-duration">${escapeHtml(track.duration)}</span>
         </a>
-      `,
-    )
+      `;
+    })
     .join("");
   const remaining = version.trackCount - version.recoveredTrackCount;
   const pending = remaining > 0 ? `<div class="song-row pending-row">${number(remaining)} more verified on Spotify</div>` : "";
@@ -174,6 +215,7 @@ fetch("/playlist-data.json")
   })
   .then((data) => {
     state.data = data;
+    historyRanks = buildHistoryRanks(data.versions);
     state.selectedVersion = data.summary.latestVersion;
     render();
   })
