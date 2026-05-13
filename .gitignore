@@ -8,3 +8,5 @@ node_modules/
 _spotify-auth.out.log
 _spotify-auth.err.log
 tmp-visual-check/
+tmp-*/
+data/spotify-streaming-history/

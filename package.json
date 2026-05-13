@@ -6,6 +6,7 @@
   "scripts": {
     "auth:spotify": "node tools/spotify-auth.mjs",
     "fetch:data": "node tools/fetch-spotify-data.mjs",
+    "import:plays": "node tools/import-streaming-history.mjs",
     "start": "node server.js",
     "dev": "node server.js"
   },

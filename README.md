@@ -14,6 +14,17 @@ The source snapshot prefers Spotify Web API playlist-item pagination when creden
 
 With API credentials, the importer keeps paginating each playlist until Spotify returns no next page, so large playlists are no longer capped by public embeds.
 
+## True Play Counts
+
+Spotify Web API does not expose lifetime personal play counts. To add real plays:
+
+1. Request Spotify's Extended streaming history export from the Spotify account privacy page.
+2. Download the zip from Spotify's email when it is ready.
+3. Put the exported JSON files in `data/spotify-streaming-history/`.
+4. Run `npm run import:plays`.
+
+The importer matches by Spotify track URI first, then title and artist. The visible site uses `playCount`, defined as every nonzero track listening event in the export. It also keeps `streams30s` for the stricter 30-second stream count.
+
 ## Run Locally
 
 ```bash
