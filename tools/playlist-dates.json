@@ -1,27 +1,67 @@
 {
+  "3Jj7M4vjtZBoxqLBgyJ0Ok": {
+    "dateMade": "2022-10-02T12:00:00.000Z",
+    "dateStatus": "screenshot_first_added",
+    "dateBasis": "Spotify desktop screenshot: oldest visible Date added row is Oct 2, 2022."
+  },
+  "4VQlSx8DyH4ocXCDIyx0VA": {
+    "dateMade": "2023-09-09T12:00:00.000Z",
+    "dateStatus": "screenshot_first_added",
+    "dateBasis": "Spotify desktop screenshot: oldest visible Date added row is Sep 9, 2023."
+  },
+  "36Xci7HoBicMoUMK896cKV": {
+    "dateMade": "2024-01-14T12:00:00.000Z",
+    "dateStatus": "screenshot_first_added",
+    "dateBasis": "Spotify desktop screenshot: oldest visible Date added row is Jan 14, 2024."
+  },
+  "1CG2TxnmNfKPTUUFtJPLtq": {
+    "dateMade": "2024-04-13T12:00:00.000Z",
+    "dateStatus": "screenshot_first_added",
+    "dateBasis": "Spotify desktop screenshot: oldest visible Date added row is Apr 13, 2024."
+  },
+  "1YFhzVUlSfDL9Lra0nGWWb": {
+    "dateMade": "2024-07-19T12:00:00.000Z",
+    "dateStatus": "screenshot_first_added",
+    "dateBasis": "Spotify desktop screenshot: oldest visible Date added row is Jul 19, 2024."
+  },
+  "4nkNtdWTbfmIeiyBj9akUn": {
+    "dateMade": "2024-11-15T12:00:00.000Z",
+    "dateStatus": "screenshot_first_added",
+    "dateBasis": "Spotify desktop screenshot: oldest visible Date added row is Nov 15, 2024."
+  },
+  "4EoYpWkv6NEYAJNu1nwRsy": {
+    "dateMade": "2025-01-08T12:00:00.000Z",
+    "dateStatus": "screenshot_first_added",
+    "dateBasis": "Spotify desktop screenshot: oldest visible Date added row is Jan 8, 2025."
+  },
+  "5z9NCWJSJxWcCIj7nle3nL": {
+    "dateMade": "2025-04-18T12:00:00.000Z",
+    "dateStatus": "screenshot_first_added",
+    "dateBasis": "Spotify desktop screenshot: oldest visible Date added row is Apr 18, 2025."
+  },
   "5N0eo1NYQZaSrGzfZlKNbl": {
-    "dateMade": "2025-04-18T18:01:19.000Z",
-    "dateStatus": "cache_estimate",
-    "dateBasis": "Local Spotify account cache near playlist row; treated as estimated until confirmed by Spotify added_at export."
+    "dateMade": "2025-07-23T12:00:00.000Z",
+    "dateStatus": "screenshot_first_added",
+    "dateBasis": "Spotify desktop screenshot: oldest visible Date added row is Jul 23, 2025."
   },
   "0ZZ1MRnVbjFxfHWPfWe7b1": {
-    "dateMade": "2025-11-14T19:24:38.000Z",
-    "dateStatus": "track_add_estimate",
-    "dateBasis": "Local Spotify account cache, first cached track-add timestamp for this playlist."
+    "dateMade": "2025-11-14T12:00:00.000Z",
+    "dateStatus": "screenshot_first_added",
+    "dateBasis": "Spotify desktop screenshot: oldest visible Date added row is Nov 14, 2025."
   },
   "6lZ8EoFJG1vrIKxTWbEPO5": {
-    "dateMade": "2026-03-03T05:02:41.652Z",
-    "dateStatus": "cache_estimate",
-    "dateBasis": "Local Spotify account cache near playlist row; treated as estimated until confirmed by Spotify added_at export."
+    "dateMade": "2026-01-17T12:00:00.000Z",
+    "dateStatus": "screenshot_first_added",
+    "dateBasis": "Spotify desktop screenshot: oldest visible Date added row is Jan 17, 2026."
   },
   "7CoSJelKCnGZa48iL0dJON": {
-    "dateMade": "2026-03-22T17:30:38.000Z",
-    "dateStatus": "track_add_estimate",
-    "dateBasis": "Local Spotify account cache, first cached track-add timestamp for this playlist."
+    "dateMade": "2026-03-22T12:00:00.000Z",
+    "dateStatus": "screenshot_first_added",
+    "dateBasis": "Spotify desktop screenshot: oldest visible Date added row is Mar 22, 2026."
   },
   "3OOFyRG3WloBREqgz9C2MX": {
     "dateMade": "2026-05-09T18:30:42.000Z",
-    "dateStatus": "track_add_estimate",
-    "dateBasis": "Local Spotify account cache, first cached track-add timestamp for this playlist."
+    "dateStatus": "screenshot_relative_plus_cache",
+    "dateBasis": "Spotify desktop screenshot showed 3 days ago on May 13, 2026; local Spotify account cache resolved that to May 9, 2026."
   }
 }
