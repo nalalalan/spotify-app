@@ -79,8 +79,22 @@ function historyRank(track) {
   return historyRanks.get(track.key) || { count: 1, firstVersion: state.selectedVersion, lastVersion: state.selectedVersion };
 }
 
+function playCount(track) {
+  return track.playStats?.playCount || 0;
+}
+
+function hasPlayCounts(version) {
+  return version.tracks.some((track) => playCount(track) > 0);
+}
+
 function rankedTracks(version) {
+  const rankByPlays = hasPlayCounts(version);
   return [...version.tracks].sort((a, b) => {
+    if (rankByPlays) {
+      const playDelta = playCount(b) - playCount(a);
+      if (playDelta) return playDelta;
+    }
+
     const aRank = historyRank(a);
     const bRank = historyRank(b);
     return (
@@ -154,21 +168,25 @@ function renderGenreMix(version) {
 }
 
 function renderSongs(version) {
+  const showPlays = hasPlayCounts(version);
   els.songsTitle.textContent = `${version.spotifyName} / ${version.profile.dateLabel}`;
-  els.songsCoverage.textContent = coverageLine(version);
+  els.songsCoverage.textContent = showPlays ? `${coverageLine(version)} / plays` : coverageLine(version);
   const rows = rankedTracks(version)
-    .map(
-      (track, rankIndex) => `
+    .map((track, rankIndex) => {
+      const detail = showPlays && track.playStats
+        ? `${track.artist} · ${number(track.playStats.playCount)} plays`
+        : track.artist;
+      return `
         <a class="song-row" href="${track.spotifyUrl}" target="_blank" rel="noreferrer">
           <span class="song-index">${number(rankIndex + 1)}</span>
           <span class="song-main">
             <strong>${escapeHtml(track.title)}</strong>
-            <span>${escapeHtml(track.artist)}</span>
+            <span>${escapeHtml(detail)}</span>
           </span>
           <span class="song-duration">${escapeHtml(track.duration)}</span>
         </a>
-      `,
-    )
+      `;
+    })
     .join("");
   const remaining = version.trackCount - version.recoveredTrackCount;
   const pending = remaining > 0 ? `<div class="song-row pending-row">${number(remaining)} more verified on Spotify</div>` : "";
