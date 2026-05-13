@@ -1,16 +1,20 @@
 import fs from "node:fs/promises";
+import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const appDir = path.resolve(__dirname, "..");
 const defaultHistoryDir = path.join(appDir, "data", "spotify-streaming-history");
 const playlistDataPath = path.join(appDir, "public", "playlist-data.json");
+const execFileAsync = promisify(execFile);
 
 const args = process.argv.slice(2);
 const dryRun = args.includes("--dry-run");
 const sourceArg = args.find((arg) => !arg.startsWith("--"));
-const historyDir = path.resolve(appDir, sourceArg || defaultHistoryDir);
+const historyPath = path.resolve(appDir, sourceArg || defaultHistoryDir);
 
 function normalizeText(value) {
   return String(value || "")
@@ -24,6 +28,10 @@ function normalizeText(value) {
 
 function textKey(title, artist) {
   return `${normalizeText(title)}:::${normalizeText(artist)}`;
+}
+
+function psQuote(value) {
+  return `'${String(value).replace(/'/g, "''")}'`;
 }
 
 function trackIdFromUri(uri) {
@@ -91,6 +99,26 @@ async function findJsonFiles(dir) {
   }
 
   return files;
+}
+
+async function prepareSource(inputPath) {
+  const stat = await fs.stat(inputPath);
+  if (stat.isDirectory()) return { dir: inputPath, cleanupDir: null };
+
+  if (!stat.isFile() || path.extname(inputPath).toLowerCase() !== ".zip") {
+    throw new Error("Pass the Spotify export zip file or a folder containing exported JSON files.");
+  }
+
+  const cleanupDir = await fs.mkdtemp(path.join(os.tmpdir(), "spotify-streaming-history-"));
+  await execFileAsync("powershell", [
+    "-NoProfile",
+    "-ExecutionPolicy",
+    "Bypass",
+    "-Command",
+    `Expand-Archive -LiteralPath ${psQuote(inputPath)} -DestinationPath ${psQuote(cleanupDir)} -Force`,
+  ]);
+
+  return { dir: cleanupDir, cleanupDir };
 }
 
 async function readStreamingEvents(dir) {
@@ -163,47 +191,52 @@ function publicPlayStats(stats) {
 
 async function main() {
   const playlistData = JSON.parse(await fs.readFile(playlistDataPath, "utf8"));
-  const { files, events } = await readStreamingEvents(historyDir);
-  const stats = buildStats(events);
-  const uniqueMatched = new Set();
-  let matchedPlacements = 0;
+  const source = await prepareSource(historyPath);
+  try {
+    const { files, events } = await readStreamingEvents(source.dir);
+    const stats = buildStats(events);
+    const uniqueMatched = new Set();
+    let matchedPlacements = 0;
 
-  for (const version of playlistData.versions) {
-    for (const track of version.tracks) {
-      const trackStats = findTrackStats(track, stats);
-      if (!trackStats) {
-        delete track.playStats;
-        continue;
+    for (const version of playlistData.versions) {
+      for (const track of version.tracks) {
+        const trackStats = findTrackStats(track, stats);
+        if (!trackStats) {
+          delete track.playStats;
+          continue;
+        }
+
+        track.playStats = publicPlayStats(trackStats);
+        uniqueMatched.add(track.key);
+        matchedPlacements += 1;
       }
-
-      track.playStats = publicPlayStats(trackStats);
-      uniqueMatched.add(track.key);
-      matchedPlacements += 1;
     }
+
+    playlistData.summary.playCounts = {
+      importedAt: new Date().toISOString(),
+      source: "Spotify extended streaming history export",
+      sourcePath: path.relative(appDir, historyPath).replace(/\\/g, "/"),
+      sourceFiles: files.length,
+      streamingEvents: events.length,
+      matchedPlaylistPlacements: matchedPlacements,
+      matchedUniquePlaylistTracks: uniqueMatched.size,
+      displayedCount: "playCount",
+      playCountDefinition: "Every nonzero track listening event in the Spotify export.",
+      streams30sDefinition: "Listening events with at least 30 seconds played are also retained as streams30s.",
+    };
+
+    if (dryRun) {
+      console.log(JSON.stringify(playlistData.summary.playCounts, null, 2));
+      return;
+    }
+
+    await fs.writeFile(playlistDataPath, `${JSON.stringify(playlistData, null, 2)}\n`, "utf8");
+    console.log(
+      `Imported ${events.length} streaming events from ${files.length} files; matched ${matchedPlacements} playlist placements.`,
+    );
+  } finally {
+    if (source.cleanupDir) await fs.rm(source.cleanupDir, { recursive: true, force: true });
   }
-
-  playlistData.summary.playCounts = {
-    importedAt: new Date().toISOString(),
-    source: "Spotify extended streaming history export",
-    sourceDirectory: path.relative(appDir, historyDir).replace(/\\/g, "/"),
-    sourceFiles: files.length,
-    streamingEvents: events.length,
-    matchedPlaylistPlacements: matchedPlacements,
-    matchedUniquePlaylistTracks: uniqueMatched.size,
-    displayedCount: "playCount",
-    playCountDefinition: "Every nonzero track listening event in the Spotify export.",
-    streams30sDefinition: "Listening events with at least 30 seconds played are also retained as streams30s.",
-  };
-
-  if (dryRun) {
-    console.log(JSON.stringify(playlistData.summary.playCounts, null, 2));
-    return;
-  }
-
-  await fs.writeFile(playlistDataPath, `${JSON.stringify(playlistData, null, 2)}\n`, "utf8");
-  console.log(
-    `Imported ${events.length} streaming events from ${files.length} files; matched ${matchedPlacements} playlist placements.`,
-  );
 }
 
 main().catch((error) => {
