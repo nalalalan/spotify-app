@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-12T20:33:51.775Z",
+  "generatedAt": "2026-05-13T06:11:35.821Z",
   "provenance": {
     "profileUrl": "https://open.spotify.com/user/1245603146?si=ac25e33ff71d4393",
     "playlistIdsRecoveredFrom": "Spotify public profile rendered in the in-app browser on 2026-05-12",
@@ -1221,10 +1221,10 @@
         }
       ],
       "profile": {
-        "dateMade": null,
-        "dateStatus": "needs_account_added_at",
-        "dateBasis": "Needs Spotify added_at rows from the logged-in account or an official Spotify playlist export.",
-        "dateLabel": "Date pending",
+        "dateMade": "2022-10-02T12:00:00.000Z",
+        "dateStatus": "screenshot_first_added",
+        "dateBasis": "Spotify desktop screenshot: oldest visible Date added row is Oct 2, 2022.",
+        "dateLabel": "Oct 2, 2022",
         "topGenre": "K-pop",
         "topArtist": "TWICE",
         "averageDuration": "5:32",
@@ -2152,10 +2152,10 @@
         }
       ],
       "profile": {
-        "dateMade": null,
-        "dateStatus": "needs_account_added_at",
-        "dateBasis": "Needs Spotify added_at rows from the logged-in account or an official Spotify playlist export.",
-        "dateLabel": "Date pending",
+        "dateMade": "2023-09-09T12:00:00.000Z",
+        "dateStatus": "screenshot_first_added",
+        "dateBasis": "Spotify desktop screenshot: oldest visible Date added row is Sep 9, 2023.",
+        "dateLabel": "Sep 9, 2023",
         "topGenre": "K-pop",
         "topArtist": "Red Velvet",
         "averageDuration": "3:18",
@@ -2748,10 +2748,10 @@
         }
       ],
       "profile": {
-        "dateMade": null,
-        "dateStatus": "needs_account_added_at",
-        "dateBasis": "Needs Spotify added_at rows from the logged-in account or an official Spotify playlist export.",
-        "dateLabel": "Date pending",
+        "dateMade": "2024-01-14T12:00:00.000Z",
+        "dateStatus": "screenshot_first_added",
+        "dateBasis": "Spotify desktop screenshot: oldest visible Date added row is Jan 14, 2024.",
+        "dateLabel": "Jan 14, 2024",
         "topGenre": "K-pop",
         "topArtist": "LE SSERAFIM",
         "averageDuration": "3:07",
@@ -3255,10 +3255,10 @@
         }
       ],
       "profile": {
-        "dateMade": null,
-        "dateStatus": "needs_account_added_at",
-        "dateBasis": "Needs Spotify added_at rows from the logged-in account or an official Spotify playlist export.",
-        "dateLabel": "Date pending",
+        "dateMade": "2024-04-13T12:00:00.000Z",
+        "dateStatus": "screenshot_first_added",
+        "dateBasis": "Spotify desktop screenshot: oldest visible Date added row is Apr 13, 2024.",
+        "dateLabel": "Apr 13, 2024",
         "topGenre": "K-pop",
         "topArtist": "LE SSERAFIM",
         "averageDuration": "3:07",
@@ -4050,10 +4050,10 @@
         }
       ],
       "profile": {
-        "dateMade": null,
-        "dateStatus": "needs_account_added_at",
-        "dateBasis": "Needs Spotify added_at rows from the logged-in account or an official Spotify playlist export.",
-        "dateLabel": "Date pending",
+        "dateMade": "2024-07-19T12:00:00.000Z",
+        "dateStatus": "screenshot_first_added",
+        "dateBasis": "Spotify desktop screenshot: oldest visible Date added row is Jul 19, 2024.",
+        "dateLabel": "Jul 19, 2024",
         "topGenre": "K-pop",
         "topArtist": "LE SSERAFIM",
         "averageDuration": "3:02",
@@ -5325,10 +5325,10 @@
         }
       ],
       "profile": {
-        "dateMade": null,
-        "dateStatus": "needs_account_added_at",
-        "dateBasis": "Needs Spotify added_at rows from the logged-in account or an official Spotify playlist export.",
-        "dateLabel": "Date pending",
+        "dateMade": "2024-11-15T12:00:00.000Z",
+        "dateStatus": "screenshot_first_added",
+        "dateBasis": "Spotify desktop screenshot: oldest visible Date added row is Nov 15, 2024.",
+        "dateLabel": "Nov 15, 2024",
         "topGenre": "K-pop",
         "topArtist": "NewJeans",
         "averageDuration": "3:05",
@@ -6600,10 +6600,10 @@
         }
       ],
       "profile": {
-        "dateMade": null,
-        "dateStatus": "needs_account_added_at",
-        "dateBasis": "Needs Spotify added_at rows from the logged-in account or an official Spotify playlist export.",
-        "dateLabel": "Date pending",
+        "dateMade": "2025-01-08T12:00:00.000Z",
+        "dateStatus": "screenshot_first_added",
+        "dateBasis": "Spotify desktop screenshot: oldest visible Date added row is Jan 8, 2025.",
+        "dateLabel": "Jan 8, 2025",
         "topGenre": "K-pop",
         "topArtist": "Red Velvet",
         "averageDuration": "3:16",
@@ -7874,10 +7874,10 @@
         }
       ],
       "profile": {
-        "dateMade": null,
-        "dateStatus": "needs_account_added_at",
-        "dateBasis": "Needs Spotify added_at rows from the logged-in account or an official Spotify playlist export.",
-        "dateLabel": "Date pending",
+        "dateMade": "2025-04-18T12:00:00.000Z",
+        "dateStatus": "screenshot_first_added",
+        "dateBasis": "Spotify desktop screenshot: oldest visible Date added row is Apr 18, 2025.",
+        "dateLabel": "Apr 18, 2025",
         "topGenre": "K-pop",
         "topArtist": "aespa",
         "averageDuration": "3:12",
@@ -9148,10 +9148,10 @@
         }
       ],
       "profile": {
-        "dateMade": "2025-04-18T18:01:19.000Z",
-        "dateStatus": "cache_estimate",
-        "dateBasis": "Local Spotify account cache near playlist row; treated as estimated until confirmed by Spotify added_at export.",
-        "dateLabel": "Apr 18, 2025",
+        "dateMade": "2025-07-23T12:00:00.000Z",
+        "dateStatus": "screenshot_first_added",
+        "dateBasis": "Spotify desktop screenshot: oldest visible Date added row is Jul 23, 2025.",
+        "dateLabel": "Jul 23, 2025",
         "topGenre": "K-pop",
         "topArtist": "ILLIT",
         "averageDuration": "2:57",
@@ -9217,7 +9217,7 @@
       "spotifyUrl": "https://open.spotify.com/playlist/0ZZ1MRnVbjFxfHWPfWe7b1",
       "embedUrl": "https://open.spotify.com/embed/playlist/0ZZ1MRnVbjFxfHWPfWe7b1",
       "owner": "Alan",
-      "coverArt": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da84ef73e079057eab265f7b9d62",
+      "coverArt": "https://image-cdn-fa.spotifycdn.com/image/ab67706c0000da84ef73e079057eab265f7b9d62",
       "trackCount": 100,
       "tracks": [
         {
@@ -10422,9 +10422,9 @@
         }
       ],
       "profile": {
-        "dateMade": "2025-11-14T19:24:38.000Z",
-        "dateStatus": "track_add_estimate",
-        "dateBasis": "Local Spotify account cache, first cached track-add timestamp for this playlist.",
+        "dateMade": "2025-11-14T12:00:00.000Z",
+        "dateStatus": "screenshot_first_added",
+        "dateBasis": "Spotify desktop screenshot: oldest visible Date added row is Nov 14, 2025.",
         "dateLabel": "Nov 14, 2025",
         "topGenre": "K-pop",
         "topArtist": "NewJeans",
@@ -11696,10 +11696,10 @@
         }
       ],
       "profile": {
-        "dateMade": "2026-03-03T05:02:41.652Z",
-        "dateStatus": "cache_estimate",
-        "dateBasis": "Local Spotify account cache near playlist row; treated as estimated until confirmed by Spotify added_at export.",
-        "dateLabel": "Mar 3, 2026",
+        "dateMade": "2026-01-17T12:00:00.000Z",
+        "dateStatus": "screenshot_first_added",
+        "dateBasis": "Spotify desktop screenshot: oldest visible Date added row is Jan 17, 2026.",
+        "dateLabel": "Jan 17, 2026",
         "topGenre": "K-pop",
         "topArtist": "Red Velvet",
         "averageDuration": "3:16",
@@ -12970,9 +12970,9 @@
         }
       ],
       "profile": {
-        "dateMade": "2026-03-22T17:30:38.000Z",
-        "dateStatus": "track_add_estimate",
-        "dateBasis": "Local Spotify account cache, first cached track-add timestamp for this playlist.",
+        "dateMade": "2026-03-22T12:00:00.000Z",
+        "dateStatus": "screenshot_first_added",
+        "dateBasis": "Spotify desktop screenshot: oldest visible Date added row is Mar 22, 2026.",
         "dateLabel": "Mar 22, 2026",
         "topGenre": "K-pop",
         "topArtist": "Red Velvet",
@@ -13789,8 +13789,8 @@
       ],
       "profile": {
         "dateMade": "2026-05-09T18:30:42.000Z",
-        "dateStatus": "track_add_estimate",
-        "dateBasis": "Local Spotify account cache, first cached track-add timestamp for this playlist.",
+        "dateStatus": "screenshot_relative_plus_cache",
+        "dateBasis": "Spotify desktop screenshot showed 3 days ago on May 13, 2026; local Spotify account cache resolved that to May 9, 2026.",
         "dateLabel": "May 9, 2026",
         "topGenre": "K-pop",
         "topArtist": "NewJeans",
