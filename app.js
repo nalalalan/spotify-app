@@ -155,21 +155,20 @@ function renderGenreMix(version) {
 
 function renderSongs(version) {
   els.songsTitle.textContent = `${version.spotifyName} / ${version.profile.dateLabel}`;
-  els.songsCoverage.textContent = `${coverageLine(version)} / repeat rank`;
+  els.songsCoverage.textContent = coverageLine(version);
   const rows = rankedTracks(version)
-    .map((track, rankIndex) => {
-      const rank = historyRank(track);
-      return `
+    .map(
+      (track, rankIndex) => `
         <a class="song-row" href="${track.spotifyUrl}" target="_blank" rel="noreferrer">
           <span class="song-index">${number(rankIndex + 1)}</span>
           <span class="song-main">
             <strong>${escapeHtml(track.title)}</strong>
-            <span>${escapeHtml(track.artist)} · ${number(rank.count)}x</span>
+            <span>${escapeHtml(track.artist)}</span>
           </span>
           <span class="song-duration">${escapeHtml(track.duration)}</span>
         </a>
-      `;
-    })
+      `,
+    )
     .join("");
   const remaining = version.trackCount - version.recoveredTrackCount;
   const pending = remaining > 0 ? `<div class="song-row pending-row">${number(remaining)} more verified on Spotify</div>` : "";
