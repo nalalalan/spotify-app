@@ -565,6 +565,14 @@ button {
     grid-template-columns: auto minmax(0, 1fr);
   }
 
+  .suite-topbar {
+    grid-template-columns: 1fr;
+  }
+
+  .suite-topbar-actions {
+    display: none;
+  }
+
   .profile-link {
     grid-column: 1 / -1;
     justify-self: start;
