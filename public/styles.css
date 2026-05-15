@@ -292,6 +292,7 @@ button {
 
 .style-chart {
   margin-top: 8px;
+  overflow-x: auto;
 }
 
 .chart-svg {
@@ -649,7 +650,8 @@ button {
   }
 
   .chart-svg.compact-chart {
-    max-width: calc(100vw - 64px);
+    width: 520px;
+    max-width: none;
   }
 
   .songs-table {

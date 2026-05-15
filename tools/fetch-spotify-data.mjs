@@ -366,7 +366,7 @@ async function fetchPublicPlaylistPreview(playlist) {
     owner: pageEntity.ownerV2?.data?.name || entity.subtitle || "Alan",
     coverArt: largestImageUrl(pageEntity.images?.items?.[0]?.sources) || largestImageUrl(entity.coverArt?.sources),
     trackCount: verifiedTrackCount,
-    recoveredTrackCount: tracks.length,
+    availableTrackCount: tracks.length,
     trackRowsComplete: tracks.length >= verifiedTrackCount,
     countBasis: "Spotify public playlist page totalCount",
     trackRowsBasis: "Spotify public embed track rows",
@@ -409,7 +409,7 @@ async function fetchSpotifyApiPlaylist(playlist, accessToken) {
     owner: meta.owner?.display_name || "Alan",
     coverArt: largestImageUrl(meta.images),
     trackCount: verifiedTrackCount || tracks.length,
-    recoveredTrackCount: tracks.length,
+    availableTrackCount: tracks.length,
     trackRowsComplete: tracks.length >= (verifiedTrackCount || tracks.length),
     countBasis: "Spotify Web API playlist items total",
     trackRowsBasis: "Spotify Web API playlist items pagination",
@@ -456,15 +456,15 @@ function earliestAddedAt(version) {
 function playlistProfile(version, previous, dateOverride) {
   const artistCounts = countBy(version.tracks, (track) => track.artist);
   const genreCounts = countBy(version.tracks, trackGenre);
-  const recoveredTotal = version.tracks.length || 1;
+  const rowTotal = version.tracks.length || 1;
   const topGenre = genreCounts[0]?.name || "mixed";
   const topArtist = artistCounts[0]?.name || "mixed";
-  const classicalShare = (genreCounts.find((genre) => genre.name === "Classical")?.count || 0) / recoveredTotal;
-  const kpopShare = (genreCounts.find((genre) => genre.name === "K-pop")?.count || 0) / recoveredTotal;
-  const scoreShare = (genreCounts.find((genre) => genre.name === "Film score")?.count || 0) / recoveredTotal;
-  const noveltyShare = (genreCounts.find((genre) => genre.name === "Retro instrumental")?.count || 0) / recoveredTotal;
+  const classicalShare = (genreCounts.find((genre) => genre.name === "Classical")?.count || 0) / rowTotal;
+  const kpopShare = (genreCounts.find((genre) => genre.name === "K-pop")?.count || 0) / rowTotal;
+  const scoreShare = (genreCounts.find((genre) => genre.name === "Film score")?.count || 0) / rowTotal;
+  const noveltyShare = (genreCounts.find((genre) => genre.name === "Retro instrumental")?.count || 0) / rowTotal;
   const averageDurationSeconds = Math.round(
-    version.tracks.reduce((sum, track) => sum + track.durationMs, 0) / recoveredTotal / 1000,
+    version.tracks.reduce((sum, track) => sum + track.durationMs, 0) / rowTotal / 1000,
   );
   const tags = [];
 
@@ -479,7 +479,7 @@ function playlistProfile(version, previous, dateOverride) {
 
   const genreMix = genreCounts.map((genre) => ({
     ...genre,
-    percent: Math.round((genre.count / recoveredTotal) * 100),
+    percent: Math.round((genre.count / rowTotal) * 100),
   }));
   const apiDateMade = earliestAddedAt(version);
   const dateMade = apiDateMade || dateOverride?.dateMade || null;
@@ -499,7 +499,7 @@ function playlistProfile(version, previous, dateOverride) {
     averageDuration: durationLabel(averageDurationSeconds * 1000),
     genreBasis: version.trackRowsComplete
       ? `all ${version.trackCount} songs`
-      : `${version.recoveredTrackCount} of ${version.trackCount} shown rows`,
+      : `${version.availableTrackCount} of ${version.trackCount} shown rows`,
     genreMix,
     topArtists: artistCounts.slice(0, 8),
     vibeTags: tags.slice(0, 5),
@@ -593,7 +593,7 @@ function buildSummary(versions, changes) {
   const artistCounts = countBy(allTracks, (track) => track.artist).slice(0, 12);
   const latest = versions.at(-1);
   const verifiedTrackPlacements = versions.reduce((sum, version) => sum + version.trackCount, 0);
-  const recoveredTrackPlacements = versions.reduce((sum, version) => sum + version.tracks.length, 0);
+  const availableTrackPlacements = versions.reduce((sum, version) => sum + version.tracks.length, 0);
   const allRowsComplete = versions.every((version) => version.trackRowsComplete);
 
   const largestAddition = [...changes].sort((a, b) => b.addedCount - a.addedCount)[0] || null;
@@ -604,7 +604,7 @@ function buildSummary(versions, changes) {
     latestVersion: latest.version,
     latestTrackCount: latest.trackCount,
     verifiedTrackPlacements,
-    recoveredTrackPlacements,
+    availableTrackPlacements,
     totalTrackPlacements: verifiedTrackPlacements,
     knownUniqueTrackCount: uniqueTracks.size,
     uniqueTrackCountBasis: allRowsComplete
@@ -688,11 +688,11 @@ async function main() {
     generatedAt: new Date().toISOString(),
     provenance: {
       profileUrl: SOURCE_PROFILE_URL,
-      playlistIdsRecoveredFrom: "Spotify public profile rendered in the in-app browser on 2026-05-12",
-      trackRowsRecoveredFrom: spotifyAuth
+      playlistIdSource: "Spotify public profile rendered in the in-app browser on 2026-05-12",
+      trackRowSource: spotifyAuth
         ? `${spotifyAuth.authMode}; paginated playlist-items endpoint.`
         : "Spotify public embed __NEXT_DATA__ payloads",
-      dateRowsRecoveredFrom: spotifyAuth
+      dateRowSource: spotifyAuth
         ? `${spotifyAuth.authMode}; earliest added_at row per playlist.`
         : "Local Spotify account cache after opening playlists in the installed Spotify app; Spotify public embeds do not include added_at rows.",
     },

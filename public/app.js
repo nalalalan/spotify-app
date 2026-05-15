@@ -135,7 +135,7 @@ function topArtistLine(version) {
 
 function coverageLine(version, completeWord = "songs") {
   if (version.trackRowsComplete) return `${number(version.trackCount)} ${completeWord}`;
-  return `${number(version.recoveredTrackCount)} shown / ${number(version.trackCount)} verified`;
+  return `${number(version.availableTrackCount ?? version.tracks.length)} shown / ${number(version.trackCount)} verified`;
 }
 
 function renderOverview(version) {
@@ -222,10 +222,10 @@ function renderStyleTrend() {
   }
 
   const compactChart = window.innerWidth < 520;
-  const width = compactChart ? 320 : 680;
-  const height = compactChart ? 232 : 220;
+  const width = compactChart ? 520 : 680;
+  const height = compactChart ? 244 : 220;
   const pad = compactChart
-    ? { top: 14, right: 42, bottom: 70, left: 46 }
+    ? { top: 14, right: 28, bottom: 78, left: 50 }
     : { top: 14, right: 18, bottom: 50, left: 54 };
   const plotWidth = width - pad.left - pad.right;
   const plotHeight = height - pad.top - pad.bottom;
@@ -337,7 +337,7 @@ function renderSongs(version) {
       `;
     })
     .join("");
-  const remaining = version.trackCount - version.recoveredTrackCount;
+  const remaining = version.trackCount - (version.availableTrackCount ?? version.tracks.length);
   const pending = remaining > 0 ? `<div class="song-row pending-row">${number(remaining)} more verified on Spotify</div>` : "";
   els.songsList.innerHTML = `
     <div class="songs-table">

@@ -546,7 +546,7 @@ function applyStyles(playlistData) {
     const styleCounts = countBy(version.tracks, (track) => track.style);
     version.profile.styleBasis = version.trackRowsComplete
       ? `${version.trackCount} songs`
-      : `${version.recoveredTrackCount} shown / ${version.trackCount} verified`;
+      : `${version.availableTrackCount ?? version.tracks.length} shown / ${version.trackCount} verified`;
     version.profile.styleMix = toMix(styleCounts, version.tracks.length || 1);
     version.profile.genreBasis = version.profile.styleBasis;
     version.profile.genreMix = version.profile.styleMix;
