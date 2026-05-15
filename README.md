@@ -22,7 +22,7 @@ Spotify Web API does not expose lifetime personal play counts. To add real plays
 2. Download the zip from Spotify's email when it is ready.
 3. Put the zip at `data/spotify-streaming-history.zip` and run `npm run import:plays -- data/spotify-streaming-history.zip`, or extract the JSON files into `data/spotify-streaming-history/` and run `npm run import:plays`.
 
-The importer matches by Spotify track URI first, then title and artist. The visible site uses `playCount`, defined as every nonzero track listening event in the export. It also keeps `streams30s` for the stricter 30-second stream count.
+The raw export folder and zip are git-ignored. The importer matches by Spotify track URI first, then title and artist. The visible site uses `playCount`, defined as every nonzero track listening event in the export. It also keeps `streams30s` for the stricter 30-second stream count. Playlist songs with no matching export event are shown as `0 plays`.
 
 ## Run Locally
 

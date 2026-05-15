@@ -10,3 +10,4 @@ _spotify-auth.err.log
 tmp-visual-check/
 tmp-*/
 data/spotify-streaming-history/
+data/spotify-streaming-history*.zip

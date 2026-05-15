@@ -68,6 +68,7 @@ function normalizePlayedAt(event) {
 }
 
 function normalizeEvent(raw) {
+  const format = raw.ts ? "extended" : raw.endTime ? "account_data" : "unknown";
   const title = raw.master_metadata_track_name || raw.trackName || raw.track_name || null;
   const artist = raw.master_metadata_album_artist_name || raw.artistName || raw.artist_name || null;
   const uri = raw.spotify_track_uri || raw.spotifyTrackUri || raw.trackUri || null;
@@ -82,6 +83,7 @@ function normalizeEvent(raw) {
     spotifyTrackId: trackIdFromUri(uri),
     msPlayed,
     playedAt: normalizePlayedAt(raw),
+    format,
   };
 }
 
@@ -185,8 +187,30 @@ function publicPlayStats(stats) {
     firstPlayedAt: stats.firstPlayedAt,
     lastPlayedAt: stats.lastPlayedAt,
     matchBasis: stats.matchBasis,
-    source: "spotify_extended_streaming_history_export",
+    source: "spotify_streaming_history_export",
   };
+}
+
+function zeroPlayStats() {
+  return {
+    playCount: 0,
+    streams30s: 0,
+    totalMs: 0,
+    totalHours: 0,
+    firstPlayedAt: null,
+    lastPlayedAt: null,
+    matchBasis: "no_export_event",
+    source: "spotify_streaming_history_export",
+  };
+}
+
+function exportKind(events) {
+  const hasExtended = events.some((event) => event.format === "extended");
+  const hasAccountData = events.some((event) => event.format === "account_data");
+  if (hasExtended && hasAccountData) return "mixed";
+  if (hasExtended) return "extended_streaming_history";
+  if (hasAccountData) return "account_data_streaming_history";
+  return "unknown_streaming_history";
 }
 
 async function main() {
@@ -202,7 +226,7 @@ async function main() {
       for (const track of version.tracks) {
         const trackStats = findTrackStats(track, stats);
         if (!trackStats) {
-          delete track.playStats;
+          track.playStats = zeroPlayStats();
           continue;
         }
 
@@ -214,12 +238,14 @@ async function main() {
 
     playlistData.summary.playCounts = {
       importedAt: new Date().toISOString(),
-      source: "Spotify extended streaming history export",
-      sourcePath: path.relative(appDir, historyPath).replace(/\\/g, "/"),
+      source: "Spotify streaming history export",
+      exportKind: exportKind(events),
+      sourceFileName: path.basename(historyPath),
       sourceFiles: files.length,
       streamingEvents: events.length,
       matchedPlaylistPlacements: matchedPlacements,
       matchedUniquePlaylistTracks: uniqueMatched.size,
+      playlistTracksWithZeroEvents: playlistData.summary.knownUniqueTrackCount - uniqueMatched.size,
       displayedCount: "playCount",
       playCountDefinition: "Every nonzero track listening event in the Spotify export.",
       streams30sDefinition: "Listening events with at least 30 seconds played are also retained as streams30s.",
