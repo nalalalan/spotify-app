@@ -153,8 +153,16 @@ button {
   padding: 7px 10px;
 }
 
-.mix-panel {
+.mix-panel,
+.trend-panel {
   width: min(620px, 100%);
+}
+
+.mix-panel {
+  margin: 0 0 18px;
+}
+
+.trend-panel {
   margin: 0 0 18px;
 }
 
@@ -213,6 +221,33 @@ button {
   height: 9px;
   border-radius: 50%;
   background: var(--c);
+}
+
+.style-chart {
+  margin-top: 8px;
+}
+
+.chart-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.chart-guides line {
+  stroke: rgba(23, 23, 19, 0.13);
+  stroke-width: 1;
+}
+
+.chart-svg text {
+  fill: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0;
+}
+
+.trend-legend {
+  margin-top: 4px;
 }
 
 .timeline-wrap {
