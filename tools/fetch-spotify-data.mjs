@@ -659,7 +659,7 @@ function buildLongitudinalAnalysis(versions, changes, artistCounts) {
 
 function dateLabel(value) {
   return new Intl.DateTimeFormat("en-US", {
-    timeZone: "America/New_York",
+    timeZone: "UTC",
     month: "short",
     day: "numeric",
     year: "numeric",
