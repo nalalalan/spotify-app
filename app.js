@@ -34,7 +34,8 @@ const genreColors = {
   Classical: "#335f7c",
   "Film score": "#8a6a2f",
   "Retro instrumental": "#7a5b9a",
-  "Western/Disney pop": "#777166",
+  "Disney/theater pop": "#8a6a2f",
+  "Western pop/rock": "#777166",
 };
 
 let historyRanks = new Map();
@@ -197,6 +198,21 @@ function percentFor(row, styleName) {
   return (row.playMix || []).find((item) => item.name === styleName)?.percent || 0;
 }
 
+function shortDateLabel(row, compact = false) {
+  const date = new Date(row.dateMade || "");
+  if (Number.isFinite(date.getTime())) {
+    if (compact) {
+      return `${date.getUTCMonth() + 1}/${String(date.getUTCFullYear()).slice(-2)}`;
+    }
+
+    const month = new Intl.DateTimeFormat("en-US", { timeZone: "UTC", month: "short" }).format(date);
+    const year = new Intl.DateTimeFormat("en-US", { timeZone: "UTC", year: "2-digit" }).format(date);
+    return `${month} '${year}`;
+  }
+
+  return String(row.dateLabel || "").replace(/,?\s*20(\d{2})$/, " '$1");
+}
+
 function renderStyleTrend() {
   const rows = trendRows();
   const styles = chartStyles(rows);
@@ -205,16 +221,25 @@ function renderStyleTrend() {
     return;
   }
 
-  const width = 620;
-  const height = 170;
-  const pad = { top: 12, right: 12, bottom: 24, left: 12 };
+  const compactChart = window.innerWidth < 520;
+  const width = compactChart ? 320 : 680;
+  const height = compactChart ? 232 : 220;
+  const pad = compactChart
+    ? { top: 14, right: 42, bottom: 70, left: 46 }
+    : { top: 14, right: 18, bottom: 50, left: 54 };
   const plotWidth = width - pad.left - pad.right;
   const plotHeight = height - pad.top - pad.bottom;
   const xFor = (index) => pad.left + (rows.length === 1 ? 0 : (index / (rows.length - 1)) * plotWidth);
   const yFor = (percent) => pad.top + ((100 - percent) / 100) * plotHeight;
 
   const guideLines = [0, 50, 100]
-    .map((percent) => `<line x1="${pad.left}" x2="${width - pad.right}" y1="${yFor(percent).toFixed(1)}" y2="${yFor(percent).toFixed(1)}"></line>`)
+    .map((percent) => {
+      const y = yFor(percent).toFixed(1);
+      return `
+        <line x1="${pad.left}" x2="${width - pad.right}" y1="${y}" y2="${y}"></line>
+        <text class="tick-label" x="${pad.left - 8}" y="${Number(y) + 4}" text-anchor="end">${percent}</text>
+      `;
+    })
     .join("");
 
   const lines = styles
@@ -231,19 +256,41 @@ function renderStyleTrend() {
       return rows
         .map((row, index) => {
           const percent = percentFor(row, style.name);
-          return `<circle cx="${xFor(index).toFixed(1)}" cy="${yFor(percent).toFixed(1)}" r="2.8" fill="${color}"><title>${escapeHtml(`${style.name} v${row.version}: ${percent}%`)}</title></circle>`;
+          return `<circle cx="${xFor(index).toFixed(1)}" cy="${yFor(percent).toFixed(1)}" r="2.8" fill="${color}"><title>${escapeHtml(`${style.name} v${row.version} ${row.dateLabel}: ${percent}%`)}</title></circle>`;
         })
         .join("");
     })
     .join("");
 
-  els.trendCoverage.textContent = "version plays";
+  const xLabels = rows
+    .map((row, index) => {
+      const x = xFor(index).toFixed(1);
+      if (compactChart) {
+        const y = height - 20;
+        return `
+          <text class="x-label rotated-label" x="${x}" y="${y}" text-anchor="end" transform="rotate(-55 ${x} ${y})">
+            v${row.version} ${escapeHtml(shortDateLabel(row, true))}
+          </text>
+        `;
+      }
+
+      return `
+        <text class="x-label" x="${x}" y="${height - 31}" text-anchor="middle">
+          <tspan x="${x}">v${row.version}</tspan>
+          <tspan x="${x}" dy="13">${escapeHtml(shortDateLabel(row, compactChart))}</tspan>
+        </text>
+      `;
+    })
+    .join("");
+
+  els.trendCoverage.textContent = "plays by style";
   els.styleChart.innerHTML = `
-    <svg class="chart-svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="Play share by style across playlist versions">
+    <svg class="chart-svg${compactChart ? " compact-chart" : ""}" viewBox="0 0 ${width} ${height}" role="img" aria-label="Play share by style across playlist versions">
       <g class="chart-guides">${guideLines}</g>
+      <line class="axis-line" x1="${pad.left}" x2="${width - pad.right}" y1="${yFor(0).toFixed(1)}" y2="${yFor(0).toFixed(1)}"></line>
+      <text class="axis-label" transform="translate(15 ${pad.top + plotHeight / 2}) rotate(-90)" text-anchor="middle">Share of version plays (%)</text>
       <g>${lines}${dots}</g>
-      <text x="${pad.left}" y="${height - 5}">v1</text>
-      <text x="${width - pad.right}" y="${height - 5}" text-anchor="end">v${rows.at(-1).version}</text>
+      <g>${xLabels}</g>
     </svg>
     <div class="mix-legend trend-legend">
       ${styles
@@ -269,28 +316,44 @@ function dateAddedLabel(track) {
 }
 
 function renderSongs(version) {
-  const showPlays = hasPlayCounts(version);
   els.songsTitle.textContent = `${version.spotifyName} / ${version.profile.dateLabel}`;
   els.songsCoverage.textContent = coverageLine(version);
   const rows = rankedTracks(version)
     .map((track, rankIndex) => {
-      const detailParts = [track.artist, `added ${dateAddedLabel(track)}`];
-      if (showPlays) detailParts.splice(1, 0, `${number(playCount(track))} plays`);
+      const style = track.style || "Unclassified";
+      const added = dateAddedLabel(track);
+      const plays = playCount(track);
       return `
-        <a class="song-row" href="${track.spotifyUrl}" target="_blank" rel="noreferrer">
+        <a class="song-row song-table-row" href="${track.spotifyUrl}" target="_blank" rel="noreferrer">
           <span class="song-index">${number(rankIndex + 1)}</span>
-          <span class="song-main">
-            <strong>${escapeHtml(track.title)}</strong>
-            <span>${detailParts.map(escapeHtml).join(" &middot; ")}</span>
-          </span>
-          <span class="song-duration">${escapeHtml(track.duration)}</span>
+          <strong class="song-title">${escapeHtml(track.title)}</strong>
+          <span class="song-artist">${escapeHtml(track.artist)}</span>
+          <span class="song-plays">${number(plays)}</span>
+          <span class="song-added">${escapeHtml(added)}</span>
+          <span class="song-style"><i style="--c:${genreColors[style] || "#777166"}"></i>${escapeHtml(style)}</span>
+          <span class="song-duration">${escapeHtml(track.duration || "")}</span>
+          <span class="song-mobile-meta">${number(plays)} plays &middot; ${escapeHtml(added)} &middot; ${escapeHtml(track.duration || "")}</span>
         </a>
       `;
     })
     .join("");
   const remaining = version.trackCount - version.recoveredTrackCount;
   const pending = remaining > 0 ? `<div class="song-row pending-row">${number(remaining)} more verified on Spotify</div>` : "";
-  els.songsList.innerHTML = rows + pending;
+  els.songsList.innerHTML = `
+    <div class="songs-table">
+      <div class="song-table-head" aria-hidden="true">
+        <span>#</span>
+        <span>Name</span>
+        <span>Artist / composer</span>
+        <span>Plays</span>
+        <span>Date added</span>
+        <span>Style</span>
+        <span>Length</span>
+      </div>
+      ${rows}
+      ${pending}
+    </div>
+  `;
 }
 
 function renderTimeline() {
