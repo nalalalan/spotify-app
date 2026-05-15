@@ -22,9 +22,9 @@ Spotify Web API does not expose lifetime personal play counts. To add real plays
 2. Download the zip from Spotify's email when it is ready.
 3. Put the zip at `data/spotify-streaming-history.zip` and run `npm run import:plays -- data/spotify-streaming-history.zip`, or extract the JSON files into `data/spotify-streaming-history/` and run `npm run import:plays`.
 
-The raw export folder and zip are git-ignored. The importer matches by Spotify track URI first, then title and artist. It keeps lifetime `playCount`, plus `versionPlayStats.playCount` for the visible song rows.
+The raw export folder and zip are git-ignored. The importer matches by Spotify track URI and title/artist aliases so alternate editions and music-video rows can still land on the same song. It keeps lifetime `playCount`, plus `versionPlayStats.playCount` for the visible song rows.
 
-`versionPlayStats.playCount` means every nonzero track listening event after the song was added to that playlist version and before the next Driving version date. Spotify's export does not include playlist-source context, so this is a version-window count rather than proof that the play came from the playlist screen. Playlist songs with no matching export event are shown as `0 plays`.
+`playCount` means Spotify export listening events with at least 30 seconds played. Shorter nonzero rows stay in `listeningEvents` but are not shown as plays. `versionPlayStats.playCount` uses the same 30-second rule after the song was added to that playlist version and before the next Driving version date. Spotify's export does not include playlist-source context, so this is a version-window count rather than proof that the play came from the playlist screen. Playlist songs with no matching export event are shown as `0 plays`.
 
 ## Run Locally
 

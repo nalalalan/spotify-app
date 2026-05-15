@@ -92,9 +92,6 @@ const CLASSICAL_TERMS = [
   "adagio",
   "allegro",
   "andante",
-  "op.",
-  "major",
-  "minor",
 ];
 
 const SCORE_TERMS = [
@@ -304,12 +301,13 @@ function includesAny(value, terms) {
 
 function trackGenre(track) {
   const haystack = `${track.title} ${track.artist}`;
-  if (includesAny(haystack, CLASSICAL_TERMS)) return "classical";
-  if (includesAny(haystack, SCORE_TERMS)) return "score";
-  if (includesAny(haystack, NOVELTY_TERMS)) return "novelty instrumental";
+  if (includesAny(haystack, CLASSICAL_TERMS)) return "Classical";
+  if (includesAny(haystack, NOVELTY_TERMS)) return "Retro instrumental";
+  if (includesAny(haystack, ["disney", "frozen", "high school musical", "mulan", "tangled"])) return "Disney/theater pop";
+  if (includesAny(haystack, SCORE_TERMS)) return "Film score";
   if (includesAny(track.artist, KPOP_ARTISTS)) return "K-pop";
-  if (track.durationMs >= 420000) return "long-form instrumental";
-  return "pop/other";
+  if (track.durationMs >= 420000) return "Long-form instrumental";
+  return "Western pop/rock";
 }
 
 async function fetchPublicPlaylistPreview(playlist) {
@@ -461,10 +459,10 @@ function playlistProfile(version, previous, dateOverride) {
   const recoveredTotal = version.tracks.length || 1;
   const topGenre = genreCounts[0]?.name || "mixed";
   const topArtist = artistCounts[0]?.name || "mixed";
-  const classicalShare = (genreCounts.find((genre) => genre.name === "classical")?.count || 0) / recoveredTotal;
+  const classicalShare = (genreCounts.find((genre) => genre.name === "Classical")?.count || 0) / recoveredTotal;
   const kpopShare = (genreCounts.find((genre) => genre.name === "K-pop")?.count || 0) / recoveredTotal;
-  const scoreShare = (genreCounts.find((genre) => genre.name === "score")?.count || 0) / recoveredTotal;
-  const noveltyShare = (genreCounts.find((genre) => genre.name === "novelty instrumental")?.count || 0) / recoveredTotal;
+  const scoreShare = (genreCounts.find((genre) => genre.name === "Film score")?.count || 0) / recoveredTotal;
+  const noveltyShare = (genreCounts.find((genre) => genre.name === "Retro instrumental")?.count || 0) / recoveredTotal;
   const averageDurationSeconds = Math.round(
     version.tracks.reduce((sum, track) => sum + track.durationMs, 0) / recoveredTotal / 1000,
   );
@@ -473,7 +471,7 @@ function playlistProfile(version, previous, dateOverride) {
   if (classicalShare >= 0.28) tags.push("classical-heavy");
   if (kpopShare >= 0.55) tags.push("K-pop core");
   if (scoreShare >= 0.08) tags.push("score texture");
-  if (noveltyShare >= 0.08) tags.push("novelty instrumental");
+  if (noveltyShare >= 0.08) tags.push("retro instrumental");
   if (averageDurationSeconds >= 260) tags.push("long-form");
   if (averageDurationSeconds <= 205) tags.push("short high-rotation songs");
   if (previous && version.trackCount < previous.trackCount) tags.push("tightened");
@@ -501,7 +499,7 @@ function playlistProfile(version, previous, dateOverride) {
     averageDuration: durationLabel(averageDurationSeconds * 1000),
     genreBasis: version.trackRowsComplete
       ? `all ${version.trackCount} songs`
-      : `${version.recoveredTrackCount} of ${version.trackCount} recovered rows`,
+      : `${version.recoveredTrackCount} of ${version.trackCount} shown rows`,
     genreMix,
     topArtists: artistCounts.slice(0, 8),
     vibeTags: tags.slice(0, 5),
@@ -611,7 +609,7 @@ function buildSummary(versions, changes) {
     knownUniqueTrackCount: uniqueTracks.size,
     uniqueTrackCountBasis: allRowsComplete
       ? "Computed from all Spotify playlist rows in this snapshot."
-      : "Computed only from Spotify rows recovered into this snapshot.",
+      : "Computed only from Spotify rows shown in this snapshot.",
     topArtists: artistCounts,
     analysis: buildLongitudinalAnalysis(versions, changes, artistCounts),
     largestAddition: largestAddition
@@ -653,7 +651,7 @@ function buildLongitudinalAnalysis(versions, changes, artistCounts) {
       "The pattern reads like a private listening journal: keep the emotional engine, rotate the surface language.",
     ],
     sourceBoundary:
-      "Dates use local Spotify account-cache estimates where recovered; unresolved dates stay marked instead of guessed.",
+      "Dates use local Spotify account-cache estimates where available; unresolved dates stay marked instead of guessed.",
   };
 }
 

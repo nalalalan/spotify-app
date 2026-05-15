@@ -26,7 +26,8 @@ const STYLE_COLORS = {
   Classical: "#335f7c",
   "Film score": "#8a6a2f",
   "Retro instrumental": "#7a5b9a",
-  "Western/Disney pop": "#777166",
+  "Disney/theater pop": "#8a6a2f",
+  "Western pop/rock": "#777166",
 };
 
 const CLASSICAL_TERMS = [
@@ -56,7 +57,6 @@ const CLASSICAL_TERMS = [
   "adagio",
   "allegro",
   "andante",
-  "op",
 ];
 
 const SCORE_TERMS = [
@@ -81,6 +81,27 @@ const RETRO_INSTRUMENTAL_TERMS = [
   "passport to the future",
   "puppet",
   "synth",
+];
+
+const DISNEY_THEATER_TERMS = [
+  "disney",
+  "frozen",
+  "high school musical",
+  "mulan",
+  "rogers the musical",
+  "tangled",
+];
+
+const WESTERN_POP_ROCK_TERMS = [
+  "bella poarch",
+  "eagles",
+  "funkytown",
+  "hotel california",
+  "kevin macleod",
+  "lipps inc",
+  "lonely island",
+  "polyphia",
+  "the hu",
 ];
 
 const KPOP_SOFT_ARTISTS = [
@@ -116,21 +137,27 @@ const KPOP_DANCE_ARTISTS = [
   "chungha",
   "everglow",
   "hwasa",
+  "i dle",
   "jeon somi",
   "jennie",
+  "jessi",
   "kiss of life",
   "le sserafim",
+  "lee chaeyeon",
   "lisa",
   "mamamoo",
   "orange caramel",
+  "xg",
   "zico",
 ];
 
 const KPOP_VOCAL_ARTISTS = [
   "iu",
+  "jihyo",
   "jisoo",
   "jo yuri",
   "joy",
+  "meenoi",
   "seulgi",
   "taeyeon",
   "wendy",
@@ -144,7 +171,9 @@ const KPOP_BOY_GROUP_ARTISTS = [
   "jimin",
   "nct",
   "seventeen",
+  "shinee",
   "stray kids",
+  "tfn",
   "tomorrow x together",
   "txt",
 ];
@@ -163,7 +192,9 @@ const KPOP_BRIGHT_ARTISTS = [
   "ive",
   "iz one",
   "izna",
+  "ifeye",
   "kep1er",
+  "kiiikiii",
   "loossemble",
   "misamo",
   "miss a",
@@ -211,6 +242,7 @@ function trackBlob(track) {
 function trackStyle(track) {
   const blob = trackBlob(track);
   if (includesAny(blob, CLASSICAL_TERMS)) return "Classical";
+  if (includesAny(blob, DISNEY_THEATER_TERMS)) return "Disney/theater pop";
   if (includesAny(blob, SCORE_TERMS)) return "Film score";
   if (includesAny(blob, RETRO_INSTRUMENTAL_TERMS)) return "Retro instrumental";
   if (includesAny(blob, KPOP_BOY_GROUP_ARTISTS)) return "K-pop boy group";
@@ -219,7 +251,8 @@ function trackStyle(track) {
   if (includesAny(blob, KPOP_DANCE_ARTISTS)) return "K-pop dance";
   if (includesAny(blob, KPOP_SOFT_ARTISTS)) return "K-pop soft/R&B";
   if (includesAny(blob, KPOP_BRIGHT_ARTISTS)) return "K-pop bright pop";
-  return "Western/Disney pop";
+  if (includesAny(blob, WESTERN_POP_ROCK_TERMS)) return "Western pop/rock";
+  return "Western pop/rock";
 }
 
 function countBy(items, getKey, getValue = () => 1) {
@@ -352,31 +385,14 @@ async function readStreamingEvents(dir) {
     const rows = Array.isArray(parsed) ? parsed : parsed?.items || parsed?.data || [];
     for (const row of rows) {
       const event = normalizeEvent(row);
-      if (event) events.push(event);
+      if (event) {
+        event.eventId = events.length;
+        events.push(event);
+      }
     }
   }
 
   return { files, events };
-}
-
-function buildStats(events) {
-  const byTrackId = new Map();
-  const byText = new Map();
-
-  for (const event of events) {
-    if (event.spotifyTrackId) {
-      const current = byTrackId.get(event.spotifyTrackId) || createStats("spotify_track_uri");
-      addStats(current, event);
-      byTrackId.set(event.spotifyTrackId, current);
-    }
-
-    const fallbackKey = textKey(event.title, event.artist);
-    const current = byText.get(fallbackKey) || createStats("title_artist");
-    addStats(current, event);
-    byText.set(fallbackKey, current);
-  }
-
-  return { byTrackId, byText };
 }
 
 function buildEventIndexes(events) {
@@ -407,30 +423,45 @@ function candidateKeys(track) {
   ];
 }
 
-function findTrackStats(track, stats) {
-  const trackId = trackIdFromUri(track.spotifyUri);
-  if (trackId && stats.byTrackId.has(trackId)) return stats.byTrackId.get(trackId);
-
-  for (const key of candidateKeys(track)) {
-    if (stats.byText.has(key)) return stats.byText.get(key);
-  }
-
-  return null;
-}
-
 function findTrackEvents(track, eventIndexes) {
   const trackId = trackIdFromUri(track.spotifyUri);
+  const events = [];
+  const seen = new Set();
+  let matchedUri = false;
+  let matchedText = false;
+
+  const addEvents = (candidates, basis) => {
+    if (!candidates?.length) return;
+    if (basis === "spotify_track_uri") matchedUri = true;
+    if (basis === "title_artist") matchedText = true;
+
+    for (const event of candidates) {
+      const key = event.eventId ?? `${event.playedAt}-${event.spotifyUri}-${event.title}-${event.artist}-${event.msPlayed}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      events.push(event);
+    }
+  };
+
   if (trackId && eventIndexes.byTrackId.has(trackId)) {
-    return { events: eventIndexes.byTrackId.get(trackId), matchBasis: "spotify_track_uri" };
+    addEvents(eventIndexes.byTrackId.get(trackId), "spotify_track_uri");
   }
 
   for (const key of candidateKeys(track)) {
     if (eventIndexes.byText.has(key)) {
-      return { events: eventIndexes.byText.get(key), matchBasis: "title_artist" };
+      addEvents(eventIndexes.byText.get(key), "title_artist");
     }
   }
 
-  return { events: [], matchBasis: "no_export_event" };
+  const matchBasis = matchedUri && matchedText
+    ? "spotify_track_uri_or_title_artist"
+    : matchedUri
+      ? "spotify_track_uri"
+      : matchedText
+        ? "title_artist"
+        : "no_export_event";
+
+  return { events, matchBasis };
 }
 
 function timeMs(value) {
@@ -443,6 +474,12 @@ function versionStart(version) {
   if (profileStart) return profileStart;
   const trackTimes = version.tracks.map((track) => timeMs(track.addedAt)).filter((time) => time);
   return trackTimes.length ? Math.min(...trackTimes) : null;
+}
+
+function statsFromEvents(events, matchBasis) {
+  const stats = createStats(matchBasis);
+  for (const event of events) addStats(stats, event);
+  return stats;
 }
 
 function statsForWindow(events, matchBasis, startMs, endMs) {
@@ -461,7 +498,8 @@ function statsForWindow(events, matchBasis, startMs, endMs) {
 
 function publicPlayStats(stats) {
   return {
-    playCount: stats.playCount,
+    playCount: stats.streams30s,
+    listeningEvents: stats.playCount,
     streams30s: stats.streams30s,
     totalMs: stats.totalMs,
     totalHours: Number((stats.totalMs / 3600000).toFixed(2)),
@@ -475,6 +513,7 @@ function publicPlayStats(stats) {
 function zeroPlayStats() {
   return {
     playCount: 0,
+    listeningEvents: 0,
     streams30s: 0,
     totalMs: 0,
     totalHours: 0,
@@ -550,7 +589,7 @@ function applyVersionPlayStats(playlistData, eventIndexes) {
       const stats = statsForWindow(events, matchBasis, trackStart, endMs);
       track.versionPlayStats = publicVersionPlayStats(stats, trackStart, endMs);
       if (events.length) matchedVersionPlacements += 1;
-      if (stats.playCount > 0) versionPlacementsWithPlays += 1;
+      if (stats.streams30s > 0) versionPlacementsWithPlays += 1;
     }
 
     const totalPlays = version.tracks.reduce((sum, track) => sum + track.versionPlayStats.playCount, 0);
@@ -559,7 +598,7 @@ function applyVersionPlayStats(playlistData, eventIndexes) {
       (track) => track.style,
       (track) => track.versionPlayStats.playCount,
     ).filter((item) => item.count > 0);
-    version.profile.playStyleBasis = `${totalPlays} version plays`;
+    version.profile.playStyleBasis = `${totalPlays} plays`;
     version.profile.playStyleMix = toMix(playStyleCounts, totalPlays);
     version.profile.playWindow = {
       start: baseStart ? new Date(baseStart).toISOString() : null,
@@ -595,7 +634,6 @@ async function main() {
   const source = await prepareSource(historyPath);
   try {
     const { files, events } = await readStreamingEvents(source.dir);
-    const stats = buildStats(events);
     const eventIndexes = buildEventIndexes(events);
     const uniqueMatched = new Set();
     let matchedPlacements = 0;
@@ -604,12 +642,13 @@ async function main() {
 
     for (const version of playlistData.versions) {
       for (const track of version.tracks) {
-        const trackStats = findTrackStats(track, stats);
-        if (!trackStats) {
+        const { events: trackEvents, matchBasis } = findTrackEvents(track, eventIndexes);
+        if (!trackEvents.length) {
           track.playStats = zeroPlayStats();
           continue;
         }
 
+        const trackStats = statsFromEvents(trackEvents, matchBasis);
         track.playStats = publicPlayStats(trackStats);
         uniqueMatched.add(track.key);
         matchedPlacements += 1;
@@ -629,11 +668,12 @@ async function main() {
       matchedUniquePlaylistTracks: uniqueMatched.size,
       playlistTracksWithZeroEvents: playlistData.summary.knownUniqueTrackCount - uniqueMatched.size,
       displayedCount: "playCount",
-      playCountDefinition: "Every nonzero track listening event in the Spotify export.",
-      streams30sDefinition: "Listening events with at least 30 seconds played are also retained as streams30s.",
+      playCountDefinition:
+        "Spotify export listening events with at least 30 seconds played. Shorter nonzero events are retained as listeningEvents but not displayed as plays.",
+      streams30sDefinition: "Same value as playCount; retained separately for source clarity.",
       versionDisplayedCount: "versionPlayStats.playCount",
       versionPlayCountDefinition:
-        "Every nonzero track listening event after the song was added to that playlist version and before the next Driving version date. Spotify export does not include playlist-source context.",
+        "Spotify export listening events with at least 30 seconds played after the song was added to that playlist version and before the next Driving version date. Matching uses Spotify track URI plus title/artist aliases. Spotify export does not include playlist-source context.",
       matchedVersionPlacements: versionStats.matchedVersionPlacements,
       versionPlacementsWithPlays: versionStats.versionPlacementsWithPlays,
     };
