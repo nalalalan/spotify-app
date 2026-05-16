@@ -512,37 +512,55 @@ function renderSongs(version) {
       const plays = playCount(track);
       const totalPlays = totalPlayCount(track);
       return `
-        <a class="song-row song-table-row" href="${track.spotifyUrl}" target="_blank" rel="noreferrer">
-          <span class="song-index">${number(rankIndex + 1)}</span>
-          <strong class="song-title">${escapeHtml(track.title)}</strong>
-          <span class="song-artist">${escapeHtml(track.artist)}</span>
-          <span class="song-plays">${number(plays)}</span>
-          <span class="song-total-plays">${number(totalPlays)}</span>
-          <span class="song-added">${escapeHtml(added)}</span>
-          <span class="song-style">${escapeHtml(style)}</span>
-          <span class="song-duration">${escapeHtml(track.duration || "")}</span>
-          <span class="song-mobile-meta">${number(plays)} era &middot; ${number(totalPlays)} total &middot; ${escapeHtml(added)} &middot; ${escapeHtml(track.duration || "")}</span>
-        </a>
+        <tr class="song-row">
+          <td class="song-index">${number(rankIndex + 1)}</td>
+          <td class="song-title-cell">
+            <a class="song-title" href="${track.spotifyUrl}" target="_blank" rel="noreferrer">${escapeHtml(track.title)}</a>
+          </td>
+          <td class="song-artist">
+            <span class="song-artist-name">${escapeHtml(track.artist)}</span>
+            <span class="song-mobile-meta">${number(plays)} era &middot; ${number(totalPlays)} total &middot; ${escapeHtml(added)} &middot; ${escapeHtml(track.duration || "")}</span>
+          </td>
+          <td class="song-plays">${number(plays)}</td>
+          <td class="song-total-plays">${number(totalPlays)}</td>
+          <td class="song-added">${escapeHtml(added)}</td>
+          <td class="song-style">${escapeHtml(style)}</td>
+          <td class="song-duration">${escapeHtml(track.duration || "")}</td>
+        </tr>
       `;
     })
     .join("");
   const remaining = version.trackCount - (version.availableTrackCount ?? version.tracks.length);
-  const pending = remaining > 0 ? `<div class="song-row pending-row">${number(remaining)} more verified on Spotify</div>` : "";
+  const pending = remaining > 0 ? `<tr class="song-row pending-row"><td colspan="8">${number(remaining)} more verified on Spotify</td></tr>` : "";
   els.songsList.innerHTML = `
-    <div class="songs-table">
-      <div class="song-table-head" aria-hidden="true">
-        <span>#</span>
-        <span>Name</span>
-        <span>Artist</span>
-        <span>Era plays</span>
-        <span>Total plays</span>
-        <span>Date added</span>
-        <span>Style</span>
-        <span>Length</span>
-      </div>
+    <table class="songs-table">
+      <colgroup>
+        <col class="song-col-index">
+        <col class="song-col-name">
+        <col class="song-col-artist">
+        <col class="song-col-era">
+        <col class="song-col-total">
+        <col class="song-col-added">
+        <col class="song-col-style">
+        <col class="song-col-length">
+      </colgroup>
+      <thead>
+        <tr class="song-table-head">
+          <th scope="col">#</th>
+          <th scope="col">Name</th>
+          <th scope="col">Artist</th>
+          <th scope="col">Era plays</th>
+          <th scope="col">Total plays</th>
+          <th scope="col">Date added</th>
+          <th scope="col">Style</th>
+          <th scope="col">Length</th>
+        </tr>
+      </thead>
+      <tbody>
       ${rows}
       ${pending}
-    </div>
+      </tbody>
+    </table>
   `;
 }
 
