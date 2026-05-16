@@ -39,19 +39,85 @@ const genreColors = {
 };
 
 const artistPalette = [
-  "#236b43",
-  "#5d7f9d",
-  "#a84d55",
-  "#5f5aa2",
-  "#9b6b3d",
-  "#2f6b6a",
-  "#8a6a2f",
-  "#7a5b9a",
-  "#6f8796",
-  "#bf7a6a",
-  "#4d7658",
-  "#6b6fa8",
+  "#667f9e",
+  "#b95d6d",
+  "#7b68b8",
+  "#2f7775",
+  "#d98b65",
+  "#9d7b3d",
+  "#d46e9d",
+  "#5d986b",
+  "#8f6ba8",
+  "#c25f4a",
+  "#4d6f8f",
+  "#caa243",
 ];
+const artistThemeColors = {
+  "aespa": "#735cc8",
+  "akmu": "#5aa879",
+  "aoa": "#2f6f8f",
+  "apink": "#ec8bb6",
+  "babymonster": "#2c3037",
+  "bibi": "#433b46",
+  "blackpink": "#e4579b",
+  "bol4": "#d46278",
+  "bts": "#7b61c8",
+  "chuu": "#f08bb7",
+  "everglow": "#6658b7",
+  "fifty fifty": "#d2a53f",
+  "fromis_9": "#f18aad",
+  "gfriend": "#6abf93",
+  "girls' generation": "#ed8bae",
+  "got the beat": "#8a5fb2",
+  "hans zimmer": "#506578",
+  "hearts2hearts": "#f197b8",
+  "illit": "#a58add",
+  "infinite": "#9d7b3d",
+  "itzy": "#d45283",
+  "iu": "#947ec0",
+  "ive": "#416db4",
+  "i-dle": "#8a62b5",
+  "iz*one": "#d78ec4",
+  "jean-jacques perrey": "#8f6ba8",
+  "jennie": "#d8709c",
+  "jeon somi": "#ef8a73",
+  "jisoo": "#df7fa2",
+  "john williams": "#566f8a",
+  "joy": "#72a85f",
+  "jo yuri": "#7eb6d2",
+  "katseye": "#c94f82",
+  "kiss of life": "#b65c42",
+  "le sserafim": "#3b4048",
+  "lee chaeyeon": "#b987c9",
+  "lisa": "#25252b",
+  "ludwig van beethoven": "#6f5f43",
+  "misamo": "#e59384",
+  "miss a": "#9f4f64",
+  "momoland": "#e1679c",
+  "nayeon": "#f08c62",
+  "nct": "#5cac61",
+  "nct 127": "#579f5d",
+  "nct dream": "#6dbb63",
+  "newjeans": "#5f8fbd",
+  "niccolo paganini": "#7a6846",
+  "nmixx": "#178b8b",
+  "oh my girl": "#82b99a",
+  "orange caramel": "#e58a45",
+  "red velvet": "#a83246",
+  "rose": "#f25b91",
+  "say my name": "#80a8d8",
+  "seulgi": "#9d4238",
+  "seventeen": "#92a7d9",
+  "soyeon": "#a64d73",
+  "stayc": "#ee8477",
+  "stray kids": "#2f3138",
+  "tfn": "#c96b40",
+  "triples": "#5f69c8",
+  "twice": "#eda15f",
+  "viviz": "#b36bc0",
+  "yena": "#e2b63f",
+  "zico": "#a76b48",
+};
 const artistLabelLimit = 12;
 const artistMixLimit = 6;
 
@@ -83,12 +149,19 @@ function primaryArtist(track) {
   return track.artist || "Unknown";
 }
 
-function artistColor(index) {
-  return artistPalette[index % artistPalette.length];
+function normalizeArtistName(name) {
+  return String(name || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+}
+
+function artistColor(name, index) {
+  return artistThemeColors[normalizeArtistName(name)] || artistPalette[index % artistPalette.length];
 }
 
 function artistColorMap(artists) {
-  return new Map(artists.map((artist, index) => [artist.name, artistColor(index)]));
+  return new Map(artists.map((artist, index) => [artist.name, artistColor(artist.name, index)]));
 }
 
 function artistSongMix(version, colorByArtist, limit = artistMixLimit) {
@@ -97,7 +170,7 @@ function artistSongMix(version, colorByArtist, limit = artistMixLimit) {
   const top = artists.slice(0, limit).map((artist, index) => ({
     ...artist,
     percent: Math.round((artist.count / total) * 100),
-    color: colorByArtist.get(artist.name) || artistColor(index),
+    color: colorByArtist.get(artist.name) || artistColor(artist.name, index),
   }));
   const otherCount = artists.slice(limit).reduce((sum, artist) => sum + artist.count, 0);
   if (otherCount > 0) {
