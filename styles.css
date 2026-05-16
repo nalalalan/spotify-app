@@ -197,7 +197,29 @@ button {
 }
 
 .current-copy {
+  display: grid;
+  grid-template-columns: minmax(0, 680px) minmax(250px, 1fr);
+  column-gap: 22px;
+  align-items: start;
   min-width: 0;
+}
+
+.current-copy > .range-label,
+.current-copy > h1,
+.current-copy > .current-meta,
+.analytics-main {
+  grid-column: 1;
+}
+
+.current-copy > .open-link {
+  grid-column: 1;
+  justify-self: start;
+}
+
+.artist-rank-panel {
+  grid-column: 2;
+  grid-row: 1 / span 6;
+  align-self: start;
 }
 
 .current-copy h1 {
@@ -226,11 +248,7 @@ button {
 }
 
 .analytics-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 680px) minmax(250px, 1fr);
-  gap: 22px;
-  align-items: start;
-  width: min(1040px, 100%);
+  display: contents;
 }
 
 .analytics-main {
@@ -364,6 +382,15 @@ button {
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+.artist-rank-panel .mix-head {
+  justify-content: flex-start;
+  margin-bottom: 7px;
+}
+
+.artist-rank-panel .mix-head strong {
+  white-space: nowrap;
 }
 
 .artist-rank-item {
@@ -680,7 +707,8 @@ button {
 
   .mix-panel,
   .trend-panel,
-  .analytics-layout {
+  .analytics-layout,
+  .current-copy {
     width: 100%;
     max-width: 100%;
   }
@@ -689,9 +717,20 @@ button {
     max-height: 520px;
   }
 
-  .analytics-layout {
+  .current-copy {
     grid-template-columns: 1fr;
     gap: 7px;
+  }
+
+  .artist-rank-panel {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .artist-rank-panel .mix-head {
+    align-items: end;
+    flex-direction: row;
+    gap: 10px;
   }
 
   .mix-panel .mix-legend {
