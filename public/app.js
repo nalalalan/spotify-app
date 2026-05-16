@@ -465,7 +465,7 @@ function renderArtistTrend(rows = trendRows(), artists = chartArtists(rows), col
     })
     .join("");
 
-  els.trendCoverage.textContent = `${number(rankedArtists.length)} shown / ${number(artists.length)} total`;
+  els.trendCoverage.textContent = `${number(rankedArtists.length)}/${number(artists.length)}`;
   els.styleChart.innerHTML = `
     <div class="trend-chart-scroll">
       <svg class="chart-svg${compactChart ? " compact-chart" : ""}" viewBox="0 0 ${width} ${height}" role="img" aria-label="Play share by artist/composer across playlist versions">
