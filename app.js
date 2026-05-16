@@ -229,10 +229,11 @@ function renderStyleTrend() {
   const width = compactChart ? 520 : 680;
   const height = compactChart ? 236 : 188;
   const pad = compactChart
-    ? { top: 14, right: 28, bottom: 78, left: 50 }
-    : { top: 14, right: 18, bottom: 50, left: 54 };
+    ? { top: 14, right: 28, bottom: 78, left: 64 }
+    : { top: 14, right: 18, bottom: 50, left: 66 };
   const plotWidth = width - pad.left - pad.right;
   const plotHeight = height - pad.top - pad.bottom;
+  const axisLabelX = pad.left - 42;
   const maxPercent = Math.max(
     1,
     ...styles.flatMap((style) => rows.map((row) => percentFor(row, style.name))),
@@ -298,7 +299,7 @@ function renderStyleTrend() {
     <svg class="chart-svg${compactChart ? " compact-chart" : ""}" viewBox="0 0 ${width} ${height}" role="img" aria-label="Play share by style across playlist versions">
       <g class="chart-guides">${guideLines}</g>
       <line class="axis-line" x1="${pad.left}" x2="${width - pad.right}" y1="${yFor(0).toFixed(1)}" y2="${yFor(0).toFixed(1)}"></line>
-      <text class="axis-label" transform="translate(15 ${pad.top + plotHeight / 2}) rotate(-90)" text-anchor="middle">Share of version plays (%)</text>
+      <text class="axis-label" transform="translate(${axisLabelX} ${pad.top + plotHeight / 2}) rotate(-90)" text-anchor="middle">Play share (%)</text>
       <g>${lines}${dots}</g>
       <g>${xLabels}</g>
     </svg>
