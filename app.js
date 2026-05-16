@@ -16,6 +16,7 @@ const els = {
   mixLegend: document.querySelector("#mixLegend"),
   trendCoverage: document.querySelector("#trendCoverage"),
   styleChart: document.querySelector("#styleChart"),
+  artistRankList: document.querySelector("#artistRankList"),
   versionCount: document.querySelector("#versionCount"),
   songCount: document.querySelector("#songCount"),
   timeline: document.querySelector("#timeline"),
@@ -121,7 +122,7 @@ const artistThemeColors = {
   "zico": "#a76b48",
 };
 const artistLineLimit = 19;
-const artistRankLimit = 32;
+const artistRankLimit = 20;
 const artistMixLimit = 16;
 
 let historyRanks = new Map();
@@ -466,33 +467,29 @@ function renderArtistTrend(rows = trendRows(), artists = chartArtists(rows), col
 
   els.trendCoverage.textContent = `${number(rankedArtists.length)} shown / ${number(artists.length)} total`;
   els.styleChart.innerHTML = `
-    <div class="trend-chart-layout">
-      <div class="trend-chart-scroll">
-        <svg class="chart-svg${compactChart ? " compact-chart" : ""}" viewBox="0 0 ${width} ${height}" role="img" aria-label="Play share by artist/composer across playlist versions">
-          <g class="chart-guides">${guideLines}</g>
-          <line class="axis-line" x1="${pad.left}" x2="${width - pad.right}" y1="${yFor(0).toFixed(1)}" y2="${yFor(0).toFixed(1)}"></line>
-          <text class="axis-label" transform="translate(${axisLabelX} ${pad.top + plotHeight / 2}) rotate(-90)" text-anchor="middle">Artist share (%)</text>
-          <g>${backgroundLines}${lines}${dots}</g>
-          <g>${xLabels}</g>
-        </svg>
-      </div>
-      <ol class="artist-rank-list" aria-label="Artists ranked by total era plays">
-        ${rankedArtists
-          .map((artist, index) => {
-            const color = colorByArtist.get(artist.name) || "#777166";
-            return `
-              <li class="artist-rank-item" style="--c:${color}">
-                <span class="artist-rank-number">${index + 1}</span>
-                <i aria-hidden="true"></i>
-                <span class="artist-rank-name">${escapeHtml(artist.name)}</span>
-                <span class="artist-rank-plays">${escapeHtml(playsLabel(artist.count))}</span>
-              </li>
-            `;
-          })
-          .join("")}
-      </ol>
+    <div class="trend-chart-scroll">
+      <svg class="chart-svg${compactChart ? " compact-chart" : ""}" viewBox="0 0 ${width} ${height}" role="img" aria-label="Play share by artist/composer across playlist versions">
+        <g class="chart-guides">${guideLines}</g>
+        <line class="axis-line" x1="${pad.left}" x2="${width - pad.right}" y1="${yFor(0).toFixed(1)}" y2="${yFor(0).toFixed(1)}"></line>
+        <text class="axis-label" transform="translate(${axisLabelX} ${pad.top + plotHeight / 2}) rotate(-90)" text-anchor="middle">Artist share (%)</text>
+        <g>${backgroundLines}${lines}${dots}</g>
+        <g>${xLabels}</g>
+      </svg>
     </div>
   `;
+  els.artistRankList.innerHTML = rankedArtists
+    .map((artist, index) => {
+      const color = colorByArtist.get(artist.name) || "#777166";
+      return `
+        <li class="artist-rank-item" style="--c:${color}">
+          <span class="artist-rank-number">${index + 1}</span>
+          <i aria-hidden="true"></i>
+          <span class="artist-rank-name">${escapeHtml(artist.name)}</span>
+          <span class="artist-rank-plays">${escapeHtml(playsLabel(artist.count))}</span>
+        </li>
+      `;
+    })
+    .join("");
 }
 
 function dateAddedLabel(track) {

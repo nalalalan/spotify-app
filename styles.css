@@ -225,19 +225,21 @@ button {
   padding: 7px 10px;
 }
 
-.mix-panel {
-  width: min(680px, 100%);
-}
-
-.trend-panel {
+.analytics-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 680px) minmax(250px, 1fr);
+  gap: 22px;
+  align-items: start;
   width: min(1040px, 100%);
 }
 
-.mix-panel {
-  margin: 0 0 11px;
+.analytics-main {
+  min-width: 0;
 }
 
+.mix-panel,
 .trend-panel {
+  width: 100%;
   margin: 0 0 11px;
 }
 
@@ -302,13 +304,6 @@ button {
 .style-chart {
   margin-top: 4px;
   overflow: visible;
-}
-
-.trend-chart-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 680px) minmax(260px, 1fr);
-  gap: 20px;
-  align-items: start;
 }
 
 .trend-chart-scroll {
@@ -684,7 +679,8 @@ button {
   }
 
   .mix-panel,
-  .trend-panel {
+  .trend-panel,
+  .analytics-layout {
     width: 100%;
     max-width: 100%;
   }
@@ -693,8 +689,7 @@ button {
     max-height: 520px;
   }
 
-  .trend-chart-layout {
-    display: grid;
+  .analytics-layout {
     grid-template-columns: 1fr;
     gap: 7px;
   }
