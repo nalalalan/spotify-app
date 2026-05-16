@@ -225,9 +225,12 @@ button {
   padding: 7px 10px;
 }
 
-.mix-panel,
-.trend-panel {
+.mix-panel {
   width: min(680px, 100%);
+}
+
+.trend-panel {
+  width: min(920px, 100%);
 }
 
 .mix-panel {
@@ -298,6 +301,18 @@ button {
 
 .style-chart {
   margin-top: 4px;
+  overflow: visible;
+}
+
+.trend-chart-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 680px) minmax(210px, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.trend-chart-scroll {
+  min-width: 0;
   overflow-x: auto;
 }
 
@@ -348,8 +363,44 @@ button {
   font-size: 0.58rem;
 }
 
-.trend-legend {
-  margin-top: 2px;
+.artist-rank-list {
+  display: grid;
+  gap: 5px;
+  margin: 1px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.artist-rank-item {
+  display: grid;
+  grid-template-columns: 2ch 9px minmax(0, 1fr) auto;
+  gap: 6px;
+  align-items: center;
+  min-width: 0;
+  color: var(--muted);
+  font-size: 0.74rem;
+  font-weight: 850;
+  line-height: 1.15;
+}
+
+.artist-rank-item i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--c);
+}
+
+.artist-rank-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.artist-rank-plays {
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 .overview .open-link {
@@ -642,11 +693,10 @@ button {
     max-height: 520px;
   }
 
-  .trend-legend {
+  .trend-chart-layout {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    column-gap: 8px;
-    row-gap: 5px;
+    grid-template-columns: 1fr;
+    gap: 7px;
   }
 
   .mix-panel .mix-legend {
@@ -656,8 +706,30 @@ button {
     row-gap: 5px;
   }
 
-  .mix-panel .mix-chip,
-  .trend-legend .mix-chip {
+  .artist-rank-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 8px;
+    row-gap: 6px;
+  }
+
+  .artist-rank-item {
+    grid-template-columns: 2ch 8px minmax(0, 1fr);
+    gap: 4px 6px;
+    font-size: 0.72rem;
+  }
+
+  .artist-rank-item i {
+    width: 8px;
+    height: 8px;
+  }
+
+  .artist-rank-plays {
+    grid-column: 3;
+    color: var(--muted);
+    font-size: 0.68rem;
+  }
+
+  .mix-panel .mix-chip {
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
