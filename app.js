@@ -59,6 +59,7 @@ const artistThemeColors = {
   "apink": "#ec8bb6",
   "babymonster": "#2c3037",
   "bibi": "#433b46",
+  "billlie": "#7c8bc7",
   "blackpink": "#e4579b",
   "bol4": "#d46278",
   "bts": "#7b61c8",
@@ -88,6 +89,7 @@ const artistThemeColors = {
   "katseye": "#c94f82",
   "kiss of life": "#b65c42",
   "le sserafim": "#3b4048",
+  "lea salonga": "#8b6f4f",
   "lee chaeyeon": "#b987c9",
   "lisa": "#25252b",
   "ludwig van beethoven": "#6f5f43",
@@ -118,8 +120,9 @@ const artistThemeColors = {
   "yena": "#e2b63f",
   "zico": "#a76b48",
 };
-const artistLabelLimit = 12;
-const artistMixLimit = 6;
+const artistLineLimit = 19;
+const artistRankLimit = 32;
+const artistMixLimit = 16;
 
 let historyRanks = new Map();
 
@@ -174,8 +177,9 @@ function artistSongMix(version, colorByArtist, limit = artistMixLimit) {
   }));
   const otherCount = artists.slice(limit).reduce((sum, artist) => sum + artist.count, 0);
   if (otherCount > 0) {
+    const remaining = artists.length - limit;
     top.push({
-      name: "Other",
+      name: `${remaining} more artists`,
       count: otherCount,
       percent: Math.round((otherCount / total) * 100),
       color: "#9f988d",
@@ -379,7 +383,8 @@ function renderArtistTrend(rows = trendRows(), artists = chartArtists(rows), col
     return;
   }
 
-  const labeledArtists = artists.slice(0, artistLabelLimit);
+  const labeledArtists = artists.slice(0, artistLineLimit);
+  const rankedArtists = artists.slice(0, artistRankLimit);
   const labeledNames = new Set(labeledArtists.map((artist) => artist.name));
   const backgroundArtists = artists.filter((artist) => !labeledNames.has(artist.name));
   const compactChart = window.innerWidth < 520;
@@ -459,7 +464,7 @@ function renderArtistTrend(rows = trendRows(), artists = chartArtists(rows), col
     })
     .join("");
 
-  els.trendCoverage.textContent = `${number(artists.length)} artists`;
+  els.trendCoverage.textContent = `${number(rankedArtists.length)} shown / ${number(artists.length)} total`;
   els.styleChart.innerHTML = `
     <div class="trend-chart-layout">
       <div class="trend-chart-scroll">
@@ -472,7 +477,7 @@ function renderArtistTrend(rows = trendRows(), artists = chartArtists(rows), col
         </svg>
       </div>
       <ol class="artist-rank-list" aria-label="Artists ranked by total era plays">
-        ${labeledArtists
+        ${rankedArtists
           .map((artist, index) => {
             const color = colorByArtist.get(artist.name) || "#777166";
             return `

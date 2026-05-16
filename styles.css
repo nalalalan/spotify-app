@@ -230,7 +230,7 @@ button {
 }
 
 .trend-panel {
-  width: min(920px, 100%);
+  width: min(1040px, 100%);
 }
 
 .mix-panel {
@@ -306,8 +306,8 @@ button {
 
 .trend-chart-layout {
   display: grid;
-  grid-template-columns: minmax(0, 680px) minmax(210px, 1fr);
-  gap: 18px;
+  grid-template-columns: minmax(0, 680px) minmax(260px, 1fr);
+  gap: 20px;
   align-items: start;
 }
 
@@ -365,8 +365,8 @@ button {
 
 .artist-rank-list {
   display: grid;
-  gap: 5px;
-  margin: 1px 0 0;
+  gap: 4px;
+  margin: 0;
   padding: 0;
   list-style: none;
 }
@@ -378,9 +378,9 @@ button {
   align-items: center;
   min-width: 0;
   color: var(--muted);
-  font-size: 0.74rem;
+  font-size: 0.69rem;
   font-weight: 850;
-  line-height: 1.15;
+  line-height: 1.08;
 }
 
 .artist-rank-item i {
@@ -715,7 +715,7 @@ button {
   .artist-rank-item {
     grid-template-columns: 2ch 8px minmax(0, 1fr);
     gap: 4px 6px;
-    font-size: 0.72rem;
+    font-size: 0.69rem;
   }
 
   .artist-rank-item i {
