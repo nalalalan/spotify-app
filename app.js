@@ -38,6 +38,22 @@ const genreColors = {
   "Western pop/rock": "#777166",
 };
 
+const artistPalette = [
+  "#236b43",
+  "#5d7f9d",
+  "#a84d55",
+  "#5f5aa2",
+  "#9b6b3d",
+  "#2f6b6a",
+  "#8a6a2f",
+  "#7a5b9a",
+  "#6f8796",
+  "#bf7a6a",
+  "#4d7658",
+  "#6b6fa8",
+];
+const artistLabelLimit = 12;
+
 let historyRanks = new Map();
 
 function number(value) {
@@ -59,6 +75,11 @@ function byArtist(tracks) {
   return [...counts.entries()]
     .map(([name, count]) => ({ name, count }))
     .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+}
+
+function primaryArtist(track) {
+  if (Array.isArray(track.artists) && track.artists.length) return track.artists[0];
+  return track.artist || "Unknown";
 }
 
 function buildHistoryRanks(versions) {
@@ -152,7 +173,7 @@ function renderOverview(version) {
   els.currentArtists.textContent = topArtistLine(version);
   els.openSpotify.href = version.spotifyUrl;
   renderStyleMix(version);
-  renderStyleTrend();
+  renderArtistTrend();
   renderSongs(version);
 }
 
@@ -180,14 +201,36 @@ function renderStyleMix(version) {
 }
 
 function trendRows() {
-  return state.data.summary.styleTrend || state.data.versions.map((version) => ({
-    version: version.version,
-    label: `v${version.version}`,
-    playMix: version.profile.playStyleMix || version.profile.styleMix || version.profile.genreMix,
-  }));
+  return state.data.versions.map((version) => {
+    const counts = new Map();
+    let total = 0;
+
+    for (const track of version.tracks) {
+      const plays = playCount(track);
+      if (!plays) continue;
+      const artist = primaryArtist(track);
+      counts.set(artist, (counts.get(artist) || 0) + plays);
+      total += plays;
+    }
+
+    return {
+      version: version.version,
+      label: `v${version.version}`,
+      dateLabel: version.profile.dateLabel,
+      dateMade: version.profile.dateMade,
+      total,
+      playMix: [...counts.entries()]
+        .map(([name, count]) => ({
+          name,
+          count,
+          percent: total ? (count / total) * 100 : 0,
+        }))
+        .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name)),
+    };
+  });
 }
 
-function chartStyles(rows) {
+function chartArtists(rows) {
   const totals = new Map();
   for (const row of rows) {
     for (const item of row.playMix || []) totals.set(item.name, (totals.get(item.name) || 0) + item.count);
@@ -195,11 +238,16 @@ function chartStyles(rows) {
   return [...totals.entries()]
     .map(([name, count]) => ({ name, count }))
     .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name))
-    .slice(0, 5);
+    .filter((artist) => artist.count > 0);
 }
 
-function percentFor(row, styleName) {
-  return (row.playMix || []).find((item) => item.name === styleName)?.percent || 0;
+function percentFor(row, name) {
+  return (row.playMix || []).find((item) => item.name === name)?.percent || 0;
+}
+
+function formatPercent(value) {
+  if (value >= 10 || Number.isInteger(value)) return Math.round(value).toString();
+  return value.toFixed(1);
 }
 
 function shortDateLabel(row, compact = false) {
@@ -217,14 +265,18 @@ function shortDateLabel(row, compact = false) {
   return String(row.dateLabel || "").replace(/,?\s*20(\d{2})$/, " '$1");
 }
 
-function renderStyleTrend() {
+function renderArtistTrend() {
   const rows = trendRows();
-  const styles = chartStyles(rows);
-  if (!rows.length || !styles.length) {
+  const artists = chartArtists(rows);
+  if (!rows.length || !artists.length) {
     els.styleChart.innerHTML = "";
     return;
   }
 
+  const labeledArtists = artists.slice(0, artistLabelLimit);
+  const colorByArtist = new Map(labeledArtists.map((artist, index) => [artist.name, artistPalette[index % artistPalette.length]]));
+  const labeledNames = new Set(labeledArtists.map((artist) => artist.name));
+  const backgroundArtists = artists.filter((artist) => !labeledNames.has(artist.name));
   const compactChart = window.innerWidth < 520;
   const width = compactChart ? 520 : 680;
   const height = compactChart ? 236 : 188;
@@ -236,7 +288,7 @@ function renderStyleTrend() {
   const axisLabelX = pad.left - 42;
   const maxPercent = Math.max(
     1,
-    ...styles.flatMap((style) => rows.map((row) => percentFor(row, style.name))),
+    ...artists.flatMap((artist) => rows.map((row) => percentFor(row, artist.name))),
   );
   const yMax = Math.min(100, Math.max(40, Math.ceil((maxPercent + 3) / 10) * 10));
   const yTicks = [0, Math.round(yMax / 2), yMax];
@@ -253,21 +305,28 @@ function renderStyleTrend() {
     })
     .join("");
 
-  const lines = styles
-    .map((style) => {
-      const color = genreColors[style.name] || "#777166";
-      const points = rows.map((row, index) => `${xFor(index).toFixed(1)},${yFor(percentFor(row, style.name)).toFixed(1)}`).join(" ");
-      return `<polyline points="${points}" fill="none" stroke="${color}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></polyline>`;
+  const backgroundLines = backgroundArtists
+    .map((artist) => {
+      const points = rows.map((row, index) => `${xFor(index).toFixed(1)},${yFor(percentFor(row, artist.name)).toFixed(1)}`).join(" ");
+      return `<polyline points="${points}" fill="none" stroke="#9f988d" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" opacity="0.14"><title>${escapeHtml(artist.name)}</title></polyline>`;
     })
     .join("");
 
-  const dots = styles
-    .map((style) => {
-      const color = genreColors[style.name] || "#777166";
+  const lines = labeledArtists
+    .map((artist) => {
+      const color = colorByArtist.get(artist.name) || "#777166";
+      const points = rows.map((row, index) => `${xFor(index).toFixed(1)},${yFor(percentFor(row, artist.name)).toFixed(1)}`).join(" ");
+      return `<polyline points="${points}" fill="none" stroke="${color}" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"><title>${escapeHtml(artist.name)}</title></polyline>`;
+    })
+    .join("");
+
+  const dots = labeledArtists
+    .map((artist) => {
+      const color = colorByArtist.get(artist.name) || "#777166";
       return rows
         .map((row, index) => {
-          const percent = percentFor(row, style.name);
-          return `<circle cx="${xFor(index).toFixed(1)}" cy="${yFor(percent).toFixed(1)}" r="2.8" fill="${color}"><title>${escapeHtml(`${style.name} v${row.version} ${row.dateLabel}: ${percent}%`)}</title></circle>`;
+          const percent = percentFor(row, artist.name);
+          return `<circle cx="${xFor(index).toFixed(1)}" cy="${yFor(percent).toFixed(1)}" r="2.5" fill="${color}"><title>${escapeHtml(`${artist.name} v${row.version} ${row.dateLabel}: ${formatPercent(percent)}%`)}</title></circle>`;
         })
         .join("");
     })
@@ -294,20 +353,20 @@ function renderStyleTrend() {
     })
     .join("");
 
-  els.trendCoverage.textContent = "plays by style";
+  els.trendCoverage.textContent = `${number(artists.length)} artists`;
   els.styleChart.innerHTML = `
-    <svg class="chart-svg${compactChart ? " compact-chart" : ""}" viewBox="0 0 ${width} ${height}" role="img" aria-label="Play share by style across playlist versions">
+    <svg class="chart-svg${compactChart ? " compact-chart" : ""}" viewBox="0 0 ${width} ${height}" role="img" aria-label="Play share by artist/composer across playlist versions">
       <g class="chart-guides">${guideLines}</g>
       <line class="axis-line" x1="${pad.left}" x2="${width - pad.right}" y1="${yFor(0).toFixed(1)}" y2="${yFor(0).toFixed(1)}"></line>
-      <text class="axis-label" transform="translate(${axisLabelX} ${pad.top + plotHeight / 2}) rotate(-90)" text-anchor="middle">Play share (%)</text>
-      <g>${lines}${dots}</g>
+      <text class="axis-label" transform="translate(${axisLabelX} ${pad.top + plotHeight / 2}) rotate(-90)" text-anchor="middle">Artist share (%)</text>
+      <g>${backgroundLines}${lines}${dots}</g>
       <g>${xLabels}</g>
     </svg>
     <div class="mix-legend trend-legend">
-      ${styles
-        .map((style) => {
-          const color = genreColors[style.name] || "#777166";
-          return `<span class="mix-chip"><i style="--c:${color}"></i>${escapeHtml(style.name)}</span>`;
+      ${labeledArtists
+        .map((artist) => {
+          const color = colorByArtist.get(artist.name) || "#777166";
+          return `<span class="mix-chip"><i style="--c:${color}"></i>${escapeHtml(artist.name)}</span>`;
         })
         .join("")}
     </div>
