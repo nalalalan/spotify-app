@@ -217,6 +217,10 @@ function totalPlayCount(track) {
   return track.playStats?.playCount ?? 0;
 }
 
+function playsLabel(value) {
+  return `${number(value)} ${value === 1 ? "play" : "plays"}`;
+}
+
 function hasPlayCounts(version) {
   return version.tracks.some((track) => playCount(track) > 0);
 }
@@ -457,20 +461,31 @@ function renderArtistTrend(rows = trendRows(), artists = chartArtists(rows), col
 
   els.trendCoverage.textContent = `${number(artists.length)} artists`;
   els.styleChart.innerHTML = `
-    <svg class="chart-svg${compactChart ? " compact-chart" : ""}" viewBox="0 0 ${width} ${height}" role="img" aria-label="Play share by artist/composer across playlist versions">
-      <g class="chart-guides">${guideLines}</g>
-      <line class="axis-line" x1="${pad.left}" x2="${width - pad.right}" y1="${yFor(0).toFixed(1)}" y2="${yFor(0).toFixed(1)}"></line>
-      <text class="axis-label" transform="translate(${axisLabelX} ${pad.top + plotHeight / 2}) rotate(-90)" text-anchor="middle">Artist share (%)</text>
-      <g>${backgroundLines}${lines}${dots}</g>
-      <g>${xLabels}</g>
-    </svg>
-    <div class="mix-legend trend-legend">
-      ${labeledArtists
-        .map((artist) => {
-          const color = colorByArtist.get(artist.name) || "#777166";
-          return `<span class="mix-chip"><i style="--c:${color}"></i>${escapeHtml(artist.name)}</span>`;
-        })
-        .join("")}
+    <div class="trend-chart-layout">
+      <div class="trend-chart-scroll">
+        <svg class="chart-svg${compactChart ? " compact-chart" : ""}" viewBox="0 0 ${width} ${height}" role="img" aria-label="Play share by artist/composer across playlist versions">
+          <g class="chart-guides">${guideLines}</g>
+          <line class="axis-line" x1="${pad.left}" x2="${width - pad.right}" y1="${yFor(0).toFixed(1)}" y2="${yFor(0).toFixed(1)}"></line>
+          <text class="axis-label" transform="translate(${axisLabelX} ${pad.top + plotHeight / 2}) rotate(-90)" text-anchor="middle">Artist share (%)</text>
+          <g>${backgroundLines}${lines}${dots}</g>
+          <g>${xLabels}</g>
+        </svg>
+      </div>
+      <ol class="artist-rank-list" aria-label="Artists ranked by total era plays">
+        ${labeledArtists
+          .map((artist, index) => {
+            const color = colorByArtist.get(artist.name) || "#777166";
+            return `
+              <li class="artist-rank-item" style="--c:${color}">
+                <span class="artist-rank-number">${index + 1}</span>
+                <i aria-hidden="true"></i>
+                <span class="artist-rank-name">${escapeHtml(artist.name)}</span>
+                <span class="artist-rank-plays">${escapeHtml(playsLabel(artist.count))}</span>
+              </li>
+            `;
+          })
+          .join("")}
+      </ol>
     </div>
   `;
 }
