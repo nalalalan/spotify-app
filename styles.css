@@ -518,16 +518,17 @@ button {
 }
 
 .songs-table {
-  width: min(1180px, 100%);
-  min-width: 940px;
+  width: min(1060px, 100%);
+  min-width: 920px;
   margin: 0 auto;
 }
 
 .song-table-head,
 .song-row {
   display: grid;
-  grid-template-columns: 3ch minmax(150px, 0.72fr) minmax(118px, 0.44fr) 8.4ch 9ch 13ch minmax(118px, 0.38fr) 5.5ch;
-  gap: 12px;
+  grid-template-columns: 3ch minmax(190px, 235px) minmax(108px, 138px) 8ch 8.6ch 12.6ch minmax(128px, 158px) 5.5ch;
+  justify-content: center;
+  gap: 14px;
   align-items: center;
   padding: 9px 16px;
 }
@@ -544,6 +545,37 @@ button {
   font-weight: 880;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+}
+
+.song-table-head > span,
+.song-row > span,
+.song-row > strong {
+  min-width: 0;
+}
+
+.song-table-head > :nth-child(1),
+.song-index {
+  text-align: right;
+}
+
+.song-table-head > :nth-child(2),
+.song-title,
+.song-table-head > :nth-child(3),
+.song-artist,
+.song-table-head > :nth-child(6),
+.song-added,
+.song-table-head > :nth-child(7),
+.song-style {
+  text-align: left;
+}
+
+.song-table-head > :nth-child(4),
+.song-plays,
+.song-table-head > :nth-child(5),
+.song-total-plays,
+.song-table-head > :nth-child(8),
+.song-duration {
+  text-align: right;
 }
 
 .song-row {
@@ -595,11 +627,6 @@ button {
 .song-plays {
   color: var(--ink);
   font-weight: 900;
-  text-align: right;
-}
-
-.song-total-plays {
-  text-align: right;
 }
 
 .song-style {
