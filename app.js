@@ -223,16 +223,22 @@ function renderStyleTrend() {
 
   const compactChart = window.innerWidth < 520;
   const width = compactChart ? 520 : 680;
-  const height = compactChart ? 244 : 220;
+  const height = compactChart ? 236 : 188;
   const pad = compactChart
     ? { top: 14, right: 28, bottom: 78, left: 50 }
     : { top: 14, right: 18, bottom: 50, left: 54 };
   const plotWidth = width - pad.left - pad.right;
   const plotHeight = height - pad.top - pad.bottom;
+  const maxPercent = Math.max(
+    1,
+    ...styles.flatMap((style) => rows.map((row) => percentFor(row, style.name))),
+  );
+  const yMax = Math.min(100, Math.max(40, Math.ceil((maxPercent + 3) / 10) * 10));
+  const yTicks = [0, Math.round(yMax / 2), yMax];
   const xFor = (index) => pad.left + (rows.length === 1 ? 0 : (index / (rows.length - 1)) * plotWidth);
-  const yFor = (percent) => pad.top + ((100 - percent) / 100) * plotHeight;
+  const yFor = (percent) => pad.top + ((yMax - Math.min(percent, yMax)) / yMax) * plotHeight;
 
-  const guideLines = [0, 50, 100]
+  const guideLines = yTicks
     .map((percent) => {
       const y = yFor(percent).toFixed(1);
       return `

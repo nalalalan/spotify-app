@@ -41,14 +41,14 @@ button {
 .page-shell {
   width: min(1320px, 100%);
   margin: 0 auto;
-  padding: 18px clamp(14px, 3vw, 34px) 28px;
+  padding: 12px clamp(14px, 3vw, 34px) 28px;
 }
 
 .topbar {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   gap: 14px;
-  align-items: center;
+  align-items: start;
   margin-bottom: 16px;
 }
 
@@ -57,7 +57,7 @@ button {
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 14px;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 10px;
 }
 
 .suite-brand-cluster,
@@ -81,8 +81,8 @@ button {
 
 .suite-ao-home img {
   display: block;
-  width: 40px;
-  height: 40px;
+  width: 34px;
+  height: 34px;
 }
 
 .suite-app-brand {
@@ -92,9 +92,9 @@ button {
 
 .suite-app-mark {
   display: block;
-  width: 34px;
-  height: 34px;
-  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
 }
 
 .suite-app-name {
@@ -163,13 +163,13 @@ button {
 
 .overview {
   display: grid;
-  grid-template-columns: minmax(180px, 0.42fr) minmax(0, 1fr);
-  gap: clamp(16px, 3vw, 30px);
+  grid-template-columns: minmax(180px, 0.34fr) minmax(0, 1fr);
+  gap: clamp(16px, 2.4vw, 28px);
   align-items: center;
-  min-height: 330px;
+  min-height: 0;
   border: 1px solid var(--line);
   border-radius: 8px;
-  padding: clamp(18px, 4vw, 42px);
+  padding: clamp(16px, 2.7vw, 30px);
   background:
     linear-gradient(135deg, rgba(168, 77, 85, 0.18), rgba(51, 95, 124, 0.2)),
     var(--paper);
@@ -177,7 +177,7 @@ button {
 }
 
 .current-cover-wrap {
-  width: min(100%, 320px);
+  width: min(100%, 270px);
 }
 
 .current-cover {
@@ -195,9 +195,9 @@ button {
 }
 
 .current-copy h1 {
-  margin: 10px 0 14px;
-  font-size: clamp(2.8rem, 9vw, 6.8rem);
-  line-height: 0.9;
+  margin: 5px 0 10px;
+  font-size: clamp(2.4rem, 5.8vw, 4.6rem);
+  line-height: 0.88;
   letter-spacing: 0;
   overflow-wrap: anywhere;
 }
@@ -206,7 +206,7 @@ button {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-bottom: 14px;
+  margin-bottom: 10px;
 }
 
 .current-meta span {
@@ -225,11 +225,11 @@ button {
 }
 
 .mix-panel {
-  margin: 0 0 18px;
+  margin: 0 0 11px;
 }
 
 .trend-panel {
-  margin: 0 0 18px;
+  margin: 0 0 11px;
 }
 
 .mix-head,
@@ -253,8 +253,8 @@ button {
 .mix-bar {
   display: flex;
   overflow: hidden;
-  height: 14px;
-  margin-top: 8px;
+  height: 12px;
+  margin-top: 6px;
   border: 1px solid rgba(23, 23, 19, 0.15);
   border-radius: 999px;
   background: rgba(255, 253, 248, 0.72);
@@ -270,7 +270,7 @@ button {
   display: flex;
   flex-wrap: wrap;
   gap: 7px;
-  margin-top: 9px;
+  margin-top: 7px;
 }
 
 .mix-chip {
@@ -291,7 +291,7 @@ button {
 }
 
 .style-chart {
-  margin-top: 8px;
+  margin-top: 4px;
   overflow-x: auto;
 }
 
@@ -343,7 +343,13 @@ button {
 }
 
 .trend-legend {
-  margin-top: 4px;
+  margin-top: 2px;
+}
+
+.overview .open-link {
+  min-height: 34px;
+  font-size: 0.82rem;
+  padding: 0 13px;
 }
 
 .timeline-wrap {
@@ -559,7 +565,7 @@ button {
 
 @media (max-width: 760px) {
   .page-shell {
-    padding: 14px 12px 22px;
+    padding: 10px 12px 22px;
   }
 
   .topbar {
@@ -585,11 +591,11 @@ button {
   }
 
   .current-cover-wrap {
-    width: min(210px, 72vw);
+    width: min(178px, 58vw);
   }
 
   .current-copy h1 {
-    font-size: clamp(2rem, 10.5vw, 3rem);
+    font-size: clamp(2rem, 9vw, 2.7rem);
     line-height: 0.98;
     word-break: break-word;
   }
