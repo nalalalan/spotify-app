@@ -518,14 +518,16 @@ button {
 }
 
 .songs-table {
-  min-width: 900px;
+  width: min(1180px, 100%);
+  min-width: 940px;
+  margin: 0 auto;
 }
 
 .song-table-head,
 .song-row {
   display: grid;
-  grid-template-columns: 3ch minmax(170px, 1.25fr) minmax(160px, 0.95fr) 7ch 7ch 12ch minmax(140px, 1fr) 7ch;
-  gap: 12px;
+  grid-template-columns: 3ch minmax(180px, 1.08fr) minmax(135px, 0.72fr) 6ch 6.5ch 10ch minmax(125px, 0.82fr) 5.5ch;
+  gap: 10px;
   align-items: center;
   padding: 9px 16px;
 }
