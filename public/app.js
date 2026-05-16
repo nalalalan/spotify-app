@@ -14,7 +14,6 @@ const els = {
   mixCoverage: document.querySelector("#mixCoverage"),
   mixBar: document.querySelector("#mixBar"),
   mixLegend: document.querySelector("#mixLegend"),
-  trendCoverage: document.querySelector("#trendCoverage"),
   styleChart: document.querySelector("#styleChart"),
   artistRankList: document.querySelector("#artistRankList"),
   versionCount: document.querySelector("#versionCount"),
@@ -122,7 +121,7 @@ const artistThemeColors = {
   "zico": "#a76b48",
 };
 const artistLineLimit = 19;
-const artistRankLimit = 20;
+const artistRankLimit = 30;
 const artistMixLimit = 16;
 
 let historyRanks = new Map();
@@ -465,7 +464,6 @@ function renderArtistTrend(rows = trendRows(), artists = chartArtists(rows), col
     })
     .join("");
 
-  els.trendCoverage.textContent = `${number(rankedArtists.length)}/${number(artists.length)}`;
   els.styleChart.innerHTML = `
     <div class="trend-chart-scroll">
       <svg class="chart-svg${compactChart ? " compact-chart" : ""}" viewBox="0 0 ${width} ${height}" role="img" aria-label="Play share by artist/composer across playlist versions">
