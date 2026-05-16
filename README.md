@@ -26,7 +26,7 @@ The raw export folder and zip are git-ignored. The importer matches by Spotify t
 
 `playCount` means Spotify export listening events with at least 30 seconds played. Shorter nonzero rows stay in `listeningEvents` but are not shown as plays. `versionPlayStats.playCount` uses the same 30-second rule after the song was added to that playlist version and before the next Driving version date. Spotify's export does not include playlist-source context, so the site labels this as an era count rather than proof that the play came from the playlist screen. The song table also shows total plays from the export so old favorites do not look artificially low in newer versions. Playlist songs with no matching export event are shown as `0 plays`.
 
-The overview style bar stays song-style based. The over-time chart is artist/composer based and uses `versionPlayStats.playCount`, with every artist/composer included in the plot and the strongest artists labeled in the legend.
+The overview mix bar is artist/composer based by song share. The over-time chart is artist/composer based by `versionPlayStats.playCount`, with every artist/composer included in the plot and the strongest artists labeled in the legend. Song rows still keep the `Style` column.
 
 ## Run Locally
 

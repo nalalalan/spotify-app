@@ -53,6 +53,7 @@ const artistPalette = [
   "#6b6fa8",
 ];
 const artistLabelLimit = 12;
+const artistMixLimit = 6;
 
 let historyRanks = new Map();
 
@@ -80,6 +81,30 @@ function byArtist(tracks) {
 function primaryArtist(track) {
   if (Array.isArray(track.artists) && track.artists.length) return track.artists[0];
   return track.artist || "Unknown";
+}
+
+function artistColor(index) {
+  return artistPalette[index % artistPalette.length];
+}
+
+function artistSongMix(version, limit = artistMixLimit) {
+  const total = version.tracks.length || 1;
+  const artists = byArtist(version.tracks.map((track) => ({ ...track, artist: primaryArtist(track) })));
+  const top = artists.slice(0, limit).map((artist, index) => ({
+    ...artist,
+    percent: Math.round((artist.count / total) * 100),
+    color: artistColor(index),
+  }));
+  const otherCount = artists.slice(limit).reduce((sum, artist) => sum + artist.count, 0);
+  if (otherCount > 0) {
+    top.push({
+      name: "Other",
+      count: otherCount,
+      percent: Math.round((otherCount / total) * 100),
+      color: "#9f988d",
+    });
+  }
+  return top;
 }
 
 function buildHistoryRanks(versions) {
@@ -172,28 +197,27 @@ function renderOverview(version) {
   els.currentTracks.textContent = `${number(version.trackCount)} songs`;
   els.currentArtists.textContent = topArtistLine(version);
   els.openSpotify.href = version.spotifyUrl;
-  renderStyleMix(version);
+  renderArtistMix(version);
   renderArtistTrend();
   renderSongs(version);
 }
 
-function renderStyleMix(version) {
-  const mix = (version.profile.styleMix || version.profile.genreMix).filter((genre) => genre.count > 0);
-  els.mixCoverage.textContent = version.profile.styleBasis || version.profile.genreBasis;
+function renderArtistMix(version) {
+  const mix = artistSongMix(version).filter((artist) => artist.count > 0);
+  els.mixCoverage.textContent = coverageLine(version);
   els.mixBar.innerHTML = mix
-    .map((genre) => {
-      const color = genre.color || genreColors[genre.name] || "#777166";
-      return `<span style="--w:${genre.percent}%; --c:${color}" title="${escapeHtml(`${genre.name}: ${genre.percent}%`)}"></span>`;
+    .map((artist) => {
+      const color = artist.color || "#777166";
+      return `<span style="--w:${artist.percent}%; --c:${color}" title="${escapeHtml(`${artist.name}: ${artist.percent}%`)}"></span>`;
     })
     .join("");
   els.mixLegend.innerHTML = mix
-    .slice(0, 5)
-    .map((genre) => {
-      const color = genre.color || genreColors[genre.name] || "#777166";
+    .map((artist) => {
+      const color = artist.color || "#777166";
       return `
         <span class="mix-chip">
           <i style="--c:${color}"></i>
-          ${escapeHtml(genre.name)} ${genre.percent}%
+          ${escapeHtml(artist.name)} ${artist.percent}%
         </span>
       `;
     })
@@ -274,7 +298,7 @@ function renderArtistTrend() {
   }
 
   const labeledArtists = artists.slice(0, artistLabelLimit);
-  const colorByArtist = new Map(labeledArtists.map((artist, index) => [artist.name, artistPalette[index % artistPalette.length]]));
+  const colorByArtist = new Map(labeledArtists.map((artist, index) => [artist.name, artistColor(index)]));
   const labeledNames = new Set(labeledArtists.map((artist) => artist.name));
   const backgroundArtists = artists.filter((artist) => !labeledNames.has(artist.name));
   const compactChart = window.innerWidth < 520;

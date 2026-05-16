@@ -653,6 +653,14 @@ button {
     row-gap: 5px;
   }
 
+  .mix-panel .mix-legend {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 8px;
+    row-gap: 5px;
+  }
+
+  .mix-panel .mix-chip,
   .trend-legend .mix-chip {
     min-width: 0;
     overflow: hidden;
