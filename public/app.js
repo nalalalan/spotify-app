@@ -121,7 +121,7 @@ const artistThemeColors = {
   "zico": "#a76b48",
 };
 const artistLineLimit = 19;
-const artistRankLimit = 30;
+const artistRankLimit = 60;
 const artistMixLimit = 16;
 
 let historyRanks = new Map();
