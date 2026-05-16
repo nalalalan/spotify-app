@@ -526,7 +526,7 @@ button {
 .song-table-head,
 .song-row {
   display: grid;
-  grid-template-columns: 3ch minmax(180px, 1.08fr) minmax(135px, 0.72fr) 6ch 6.5ch 10ch minmax(125px, 0.82fr) 5.5ch;
+  grid-template-columns: 3ch minmax(180px, 1.12fr) minmax(105px, 0.5fr) 6ch 6.5ch 10ch minmax(125px, 0.82fr) 5.5ch;
   gap: 10px;
   align-items: center;
   padding: 9px 16px;

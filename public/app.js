@@ -533,7 +533,7 @@ function renderSongs(version) {
       <div class="song-table-head" aria-hidden="true">
         <span>#</span>
         <span>Name</span>
-        <span>Artist / composer</span>
+        <span>Artist</span>
         <span>Era plays</span>
         <span>Total plays</span>
         <span>Date added</span>
