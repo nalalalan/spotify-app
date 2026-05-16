@@ -81,8 +81,8 @@ button {
 
 .suite-ao-home img {
   display: block;
-  width: 34px;
-  height: 34px;
+  width: 42px;
+  height: 42px;
 }
 
 .suite-app-brand {
@@ -92,17 +92,23 @@ button {
 
 .suite-app-mark {
   display: block;
-  width: 32px;
-  height: 32px;
+  width: 38px;
+  height: 38px;
   border-radius: 999px;
 }
 
 .suite-app-name {
-  color: var(--muted);
-  font-size: 0.76rem;
+  color: var(--ink);
+  font-size: 1.03rem;
   font-weight: 850;
+  line-height: 1.22;
   letter-spacing: 0;
+  padding-bottom: 2px;
+  margin-bottom: -2px;
   text-transform: lowercase;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .suite-topbar-actions a {
@@ -531,17 +537,7 @@ button {
 }
 
 .song-style {
-  display: inline-flex;
-  gap: 7px;
-  align-items: center;
-}
-
-.song-style i {
-  flex: 0 0 auto;
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: var(--c);
+  display: block;
 }
 
 .song-mobile-meta {

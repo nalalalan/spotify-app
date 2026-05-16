@@ -87,13 +87,17 @@ function artistColor(index) {
   return artistPalette[index % artistPalette.length];
 }
 
-function artistSongMix(version, limit = artistMixLimit) {
+function artistColorMap(artists) {
+  return new Map(artists.map((artist, index) => [artist.name, artistColor(index)]));
+}
+
+function artistSongMix(version, colorByArtist, limit = artistMixLimit) {
   const total = version.tracks.length || 1;
   const artists = byArtist(version.tracks.map((track) => ({ ...track, artist: primaryArtist(track) })));
   const top = artists.slice(0, limit).map((artist, index) => ({
     ...artist,
     percent: Math.round((artist.count / total) * 100),
-    color: artistColor(index),
+    color: colorByArtist.get(artist.name) || artistColor(index),
   }));
   const otherCount = artists.slice(limit).reduce((sum, artist) => sum + artist.count, 0);
   if (otherCount > 0) {
@@ -197,13 +201,16 @@ function renderOverview(version) {
   els.currentTracks.textContent = `${number(version.trackCount)} songs`;
   els.currentArtists.textContent = topArtistLine(version);
   els.openSpotify.href = version.spotifyUrl;
-  renderArtistMix(version);
-  renderArtistTrend();
+  const rows = trendRows();
+  const artists = chartArtists(rows);
+  const colorByArtist = artistColorMap(artists);
+  renderArtistMix(version, colorByArtist);
+  renderArtistTrend(rows, artists, colorByArtist);
   renderSongs(version);
 }
 
-function renderArtistMix(version) {
-  const mix = artistSongMix(version).filter((artist) => artist.count > 0);
+function renderArtistMix(version, colorByArtist) {
+  const mix = artistSongMix(version, colorByArtist).filter((artist) => artist.count > 0);
   els.mixCoverage.textContent = coverageLine(version);
   els.mixBar.innerHTML = mix
     .map((artist) => {
@@ -289,16 +296,13 @@ function shortDateLabel(row, compact = false) {
   return String(row.dateLabel || "").replace(/,?\s*20(\d{2})$/, " '$1");
 }
 
-function renderArtistTrend() {
-  const rows = trendRows();
-  const artists = chartArtists(rows);
+function renderArtistTrend(rows = trendRows(), artists = chartArtists(rows), colorByArtist = artistColorMap(artists)) {
   if (!rows.length || !artists.length) {
     els.styleChart.innerHTML = "";
     return;
   }
 
   const labeledArtists = artists.slice(0, artistLabelLimit);
-  const colorByArtist = new Map(labeledArtists.map((artist, index) => [artist.name, artistColor(index)]));
   const labeledNames = new Set(labeledArtists.map((artist) => artist.name));
   const backgroundArtists = artists.filter((artist) => !labeledNames.has(artist.name));
   const compactChart = window.innerWidth < 520;
@@ -331,8 +335,9 @@ function renderArtistTrend() {
 
   const backgroundLines = backgroundArtists
     .map((artist) => {
+      const color = colorByArtist.get(artist.name) || "#9f988d";
       const points = rows.map((row, index) => `${xFor(index).toFixed(1)},${yFor(percentFor(row, artist.name)).toFixed(1)}`).join(" ");
-      return `<polyline points="${points}" fill="none" stroke="#9f988d" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" opacity="0.14"><title>${escapeHtml(artist.name)}</title></polyline>`;
+      return `<polyline points="${points}" fill="none" stroke="${color}" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" opacity="0.12"><title>${escapeHtml(artist.name)}</title></polyline>`;
     })
     .join("");
 
@@ -426,7 +431,7 @@ function renderSongs(version) {
           <span class="song-plays">${number(plays)}</span>
           <span class="song-total-plays">${number(totalPlays)}</span>
           <span class="song-added">${escapeHtml(added)}</span>
-          <span class="song-style"><i style="--c:${genreColors[style] || "#777166"}"></i>${escapeHtml(style)}</span>
+          <span class="song-style">${escapeHtml(style)}</span>
           <span class="song-duration">${escapeHtml(track.duration || "")}</span>
           <span class="song-mobile-meta">${number(plays)} era &middot; ${number(totalPlays)} total &middot; ${escapeHtml(added)} &middot; ${escapeHtml(track.duration || "")}</span>
         </a>
