@@ -90,6 +90,10 @@ function playCount(track) {
   return track.versionPlayStats?.playCount ?? track.playStats?.playCount ?? 0;
 }
 
+function totalPlayCount(track) {
+  return track.playStats?.playCount ?? 0;
+}
+
 function hasPlayCounts(version) {
   return version.tracks.some((track) => playCount(track) > 0);
 }
@@ -329,16 +333,18 @@ function renderSongs(version) {
       const style = track.style || "Unclassified";
       const added = dateAddedLabel(track);
       const plays = playCount(track);
+      const totalPlays = totalPlayCount(track);
       return `
         <a class="song-row song-table-row" href="${track.spotifyUrl}" target="_blank" rel="noreferrer">
           <span class="song-index">${number(rankIndex + 1)}</span>
           <strong class="song-title">${escapeHtml(track.title)}</strong>
           <span class="song-artist">${escapeHtml(track.artist)}</span>
           <span class="song-plays">${number(plays)}</span>
+          <span class="song-total-plays">${number(totalPlays)}</span>
           <span class="song-added">${escapeHtml(added)}</span>
           <span class="song-style"><i style="--c:${genreColors[style] || "#777166"}"></i>${escapeHtml(style)}</span>
           <span class="song-duration">${escapeHtml(track.duration || "")}</span>
-          <span class="song-mobile-meta">${number(plays)} plays &middot; ${escapeHtml(added)} &middot; ${escapeHtml(track.duration || "")}</span>
+          <span class="song-mobile-meta">${number(plays)} era &middot; ${number(totalPlays)} total &middot; ${escapeHtml(added)} &middot; ${escapeHtml(track.duration || "")}</span>
         </a>
       `;
     })
@@ -351,7 +357,8 @@ function renderSongs(version) {
         <span>#</span>
         <span>Name</span>
         <span>Artist / composer</span>
-        <span>Plays</span>
+        <span>Era plays</span>
+        <span>Total plays</span>
         <span>Date added</span>
         <span>Style</span>
         <span>Length</span>

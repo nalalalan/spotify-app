@@ -454,8 +454,8 @@ button {
 .song-table-head,
 .song-row {
   display: grid;
-  grid-template-columns: 3ch minmax(180px, 1.35fr) minmax(170px, 1fr) 7ch 12ch minmax(150px, 1fr) 7ch;
-  gap: 14px;
+  grid-template-columns: 3ch minmax(170px, 1.25fr) minmax(160px, 0.95fr) 7ch 7ch 12ch minmax(140px, 1fr) 7ch;
+  gap: 12px;
   align-items: center;
   padding: 9px 16px;
 }
@@ -488,6 +488,7 @@ button {
 .song-index,
 .song-artist,
 .song-plays,
+.song-total-plays,
 .song-added,
 .song-style,
 .song-duration {
@@ -522,6 +523,10 @@ button {
 .song-plays {
   color: var(--ink);
   font-weight: 900;
+  text-align: right;
+}
+
+.song-total-plays {
   text-align: right;
 }
 
@@ -689,6 +694,10 @@ button {
   }
 
   .song-plays {
+    display: none;
+  }
+
+  .song-total-plays {
     display: none;
   }
 

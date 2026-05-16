@@ -24,7 +24,7 @@ Spotify Web API does not expose lifetime personal play counts. To add real plays
 
 The raw export folder and zip are git-ignored. The importer matches by Spotify track URI and title/artist aliases so alternate editions and music-video rows can still land on the same song. It keeps lifetime `playCount`, plus `versionPlayStats.playCount` for the visible song rows.
 
-`playCount` means Spotify export listening events with at least 30 seconds played. Shorter nonzero rows stay in `listeningEvents` but are not shown as plays. `versionPlayStats.playCount` uses the same 30-second rule after the song was added to that playlist version and before the next Driving version date. Spotify's export does not include playlist-source context, so this is a version-window count rather than proof that the play came from the playlist screen. Playlist songs with no matching export event are shown as `0 plays`.
+`playCount` means Spotify export listening events with at least 30 seconds played. Shorter nonzero rows stay in `listeningEvents` but are not shown as plays. `versionPlayStats.playCount` uses the same 30-second rule after the song was added to that playlist version and before the next Driving version date. Spotify's export does not include playlist-source context, so the site labels this as an era count rather than proof that the play came from the playlist screen. The song table also shows total plays from the export so old favorites do not look artificially low in newer versions. Playlist songs with no matching export event are shown as `0 plays`.
 
 ## Run Locally
 
